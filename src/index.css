@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* DaisyUI Configuration */
+@theme {
+  --color-primary: #ff6b6b;
+  --color-secondary: #4ecdc4;
+  --color-accent: #45b7d1;
+  --color-neutral: #2d3748;
+  --color-base-100: #1a202c;
+  --color-base-200: #2d3748;
+  --color-base-300: #4a5568;
+  --color-info: #63b3ed;
+  --color-success: #68d391;
+  --color-warning: #fbd38d;
+  --color-error: #fc8181;
+}
+
+/* DaisyUI Plugin */
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, cyberpunk;
+}
