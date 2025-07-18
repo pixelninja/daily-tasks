@@ -14,7 +14,7 @@ export const BottomToolbar: React.FC<BottomToolbarProps> = ({ onAddCategory, tot
   const overallProgress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-base-100 border-t border-base-300 z-50 pwa-bottom-bar">
       {/* Progress Bar - Always visible */}
       <div 
         className="w-full bg-base-300 h-1 cursor-pointer hover:h-2 transition-all duration-200"
@@ -42,7 +42,7 @@ export const BottomToolbar: React.FC<BottomToolbarProps> = ({ onAddCategory, tot
       </div>
       
       {/* Main Toolbar */}
-      <div className="p-4">
+      <div className="px-4 pt-4 pb-safe">
         <div className="flex items-center justify-between gap-4 max-w-md mx-auto">
           {/* Reset Section */}
           <div className="flex items-center gap-3 flex-1 min-w-0">

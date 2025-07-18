@@ -53,7 +53,7 @@ export const TaskList: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-6 pb-32">
 
       {/* Header */}
       <div className="mb-6">

@@ -19,3 +19,37 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, cyberpunk;
 }
+
+/* PWA Safe Area Support */
+@layer utilities {
+  .pb-safe {
+    padding-bottom: clamp(16px, 4vh, 32px);
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  
+  .pwa-bottom-bar {
+    /* Base padding for all devices */
+    padding-bottom: 16px;
+    
+    /* Enhanced padding for devices with safe areas */
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  
+  /* Additional padding when running as standalone PWA */
+  @media (display-mode: standalone) {
+    .pwa-bottom-bar {
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    
+    .pb-safe {
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+  }
+  
+  /* iOS-specific adjustments */
+  @supports (-webkit-touch-callout: none) {
+    .pwa-bottom-bar {
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+  }
+}
