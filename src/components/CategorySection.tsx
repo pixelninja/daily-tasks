@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   DndContext, 
   closestCenter, 
@@ -30,6 +30,31 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(category.name);
+  const taskFormRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll to task form when it opens
+  useEffect(() => {
+    if (isAddingTask && taskFormRef.current) {
+      scrollToForm();
+    }
+  }, [isAddingTask]);
+  
+  // Function to scroll form into view
+  const scrollToForm = () => {
+    if (taskFormRef.current) {
+      const timer = setTimeout(() => {
+        if (taskFormRef.current) {
+          taskFormRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          });
+        }
+      }, 150);
+      
+      return () => clearTimeout(timer);
+    }
+  };
   
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -179,16 +204,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
         </div>
 
 
-        {/* Add Task Form */}
-        {isAddingTask && (
-          <div className="mb-4 p-4 bg-base-200 rounded-lg">
-            <TaskForm 
-              categoryId={category.id}
-              onSuccess={() => setIsAddingTask(false)}
-            />
-          </div>
-        )}
-
         {/* Tasks */}
         <div className="space-y-2">
           {tasks.length === 0 ? (
@@ -244,6 +259,18 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
             </>
           )}
         </div>
+        
+        {/* Add Task Form - at bottom */}
+        {isAddingTask && (
+          <div ref={taskFormRef} className="mt-4 p-4 bg-base-200 rounded-lg">
+            <TaskForm 
+              categoryId={category.id}
+              onSuccess={() => {}}
+              onCancel={() => setIsAddingTask(false)}
+              onTaskAdded={scrollToForm}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

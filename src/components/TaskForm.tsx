@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTaskContext } from '../contexts/TaskContext';
 import type { TaskFormData } from '../utils/types';
 
 interface TaskFormProps {
   categoryId?: string;
   onSuccess?: () => void;
+  onCancel?: () => void;
+  onTaskAdded?: () => void;
 }
 
-export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => {
+export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onCancel, onTaskAdded }) => {
   const { state, actions } = useTaskContext();
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     categoryId: categoryId || state.categories[0]?.id || '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Auto-focus input when component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 100); // Small delay to ensure DOM is ready
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +51,16 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
         categoryId: categoryId || formData.categoryId,
       });
       
-      onSuccess?.();
+      // Re-focus input and scroll form into view after adding task
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+        onTaskAdded?.(); // Trigger scroll from parent
+      }, 100);
+      
+      // Don't call onSuccess to keep form open for multiple additions
+      // onSuccess?.();
     } catch (error) {
       console.error('Error adding task:', error);
     } finally {
@@ -49,6 +72,8 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+    } else if (e.key === 'Escape') {
+      onCancel?.();
     }
   };
 
@@ -56,6 +81,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="form-control">
         <input
+          ref={inputRef}
           type="text"
           placeholder="Enter new task..."
           className="input input-bordered input-primary w-full text-base"
@@ -63,7 +89,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
           onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           onKeyDown={handleKeyPress}
           disabled={isSubmitting}
-          autoFocus
         />
       </div>
 
@@ -105,6 +130,17 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
             </>
           )}
         </button>
+        
+        {onCancel && (
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={onCancel}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   );
