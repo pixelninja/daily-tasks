@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import confetti from 'canvas-confetti';
 import type { Task } from '../utils/types';
 import { useTaskContext } from '../contexts/TaskContext';
+import { triggerNyanCat, triggerRaptor } from './NyanCat';
 
 interface TaskItemProps {
   task: Task;
@@ -12,6 +14,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const { actions } = useTaskContext();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
+  const checkboxRef = useRef<HTMLInputElement>(null);
   
   const {
     attributes,
@@ -23,6 +26,36 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   } = useSortable({ id: task.id });
 
   const handleToggle = async () => {
+    // If task is being completed (not uncompleted), show random celebration!
+    if (!task.completed) {
+      const randomChoice = Math.random();
+      
+      if (randomChoice < 0.2) {
+        // 20% chance for Nyan Cat!
+        triggerNyanCat();
+      } else if (randomChoice < 0.4) {
+        // 20% chance for Raptor!
+        triggerRaptor();
+      } else {
+        // 60% chance for confetti
+        if (checkboxRef.current) {
+          const rect = checkboxRef.current.getBoundingClientRect();
+          const x = (rect.left + rect.width / 2) / window.innerWidth;
+          const y = (rect.top + rect.height / 2) / window.innerHeight;
+          
+          confetti({
+            particleCount: 50,
+            spread: 45,
+            origin: { x, y },
+            colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'],
+            startVelocity: 25,
+            gravity: 0.7,
+            ticks: 150,
+            scalar: 0.8
+          });
+        }
+      }
+    }
     await actions.toggleTask(task.id);
   };
 
@@ -89,6 +122,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
           <div className="form-control">
             <label className="label cursor-pointer p-0 block">
               <input
+                ref={checkboxRef}
                 type="checkbox"
                 className="checkbox checkbox-primary"
                 checked={task.completed}
