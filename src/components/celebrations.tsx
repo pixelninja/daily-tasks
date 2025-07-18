@@ -15,7 +15,7 @@ export const triggerNyanCat = () => {
   
   // Create image
   const img = document.createElement('img');
-  img.src = 'https://gist.githubusercontent.com/brudnak/aba00c9a1c92d226f68e8ad8ba1e0a40/raw/e1e4a92f6072d15014f19aa8903d24a1ac0c41a4/nyan-cat.gif';
+  img.src = '/images/nyan-cat.gif';
   img.alt = 'Nyan Cat';
   img.style.cssText = `
     width: 100%;
@@ -75,7 +75,7 @@ export const triggerRaptor = () => {
   
   // Create image
   const img = document.createElement('img');
-  img.src = 'https://zurb.com/playground/uploads/upload/upload/224/raptor.png';
+  img.src = '/images/raptor.png';
   img.alt = 'Raptor';
   img.style.cssText = `
     width: 100%;
@@ -200,7 +200,7 @@ export const triggerUnicorn = () => {
     height: auto;
     z-index: 9999;
     pointer-events: none;
-    animation: unicorn-fly 4s ease-in-out forwards;
+    animation: unicorn-fly 3s ease-in-out forwards;
   `;
   
   // Create unicorn (using emoji since no image URL provided)
@@ -218,7 +218,7 @@ export const triggerUnicorn = () => {
     top: 40px;
     left: -50px;
     font-size: 40px;
-    animation: rainbow-trail 4s ease-in-out forwards;
+    animation: rainbow-trail 3s ease-in-out forwards;
   `;
   trail.textContent = '🌈✨🌟';
   

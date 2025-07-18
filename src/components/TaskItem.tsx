@@ -40,13 +40,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
         // 20% chance for Emoji Parade!
         triggerEmojiParade();
       } else if (randomChoice < 0.8) {
-        // 20% chance for Unicorn!
-        triggerUnicorn();
-      } else if (randomChoice < 0.9) {
-        // 10% chance for Balloons!
-        triggerBalloons();
-      } else {
-        // 10% chance for confetti
+        // 20% chance for confetti
         if (checkboxRef.current) {
           const rect = checkboxRef.current.getBoundingClientRect();
           const x = (rect.left + rect.width / 2) / window.innerWidth;
@@ -63,6 +57,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             scalar: 0.8
           });
         }
+      } else if (randomChoice < 0.9) {
+        // 10% chance for Balloons!
+        triggerBalloons();
+      } else {
+        // 10% chance for Unicorn!
+        triggerUnicorn();
       }
     }
     await actions.toggleTask(task.id);
