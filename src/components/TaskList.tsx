@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useTaskContext } from '../contexts/TaskContext';
 import { CategorySection } from './CategorySection';
 import { CategoryForm } from './CategoryForm';
-import { useDailyReset } from '../hooks/useDailyReset';
+import { BottomToolbar } from './BottomToolbar';
 
 export const TaskList: React.FC = () => {
   const { state } = useTaskContext();
   const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const { timeUntilReset, manualReset } = useDailyReset();
 
   // Get tasks grouped by category
   const getTasksByCategory = (categoryId: string) => {
@@ -44,27 +43,13 @@ export const TaskList: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
 
       {/* Header with overall progress */}
       <div className="card bg-base-100 shadow-lg border border-base-300">
         <div className="card-body p-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="card-title text-2xl">Daily Tasks</h1>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-base-content/60">
-                {timeUntilReset}
-              </div>
-              <button
-                className="btn btn-ghost btn-sm"
-                onClick={manualReset}
-                title="Reset all tasks now"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </button>
-            </div>
           </div>
           
           {totalTasks > 0 && (
@@ -87,18 +72,6 @@ export const TaskList: React.FC = () => {
         </div>
       </div>
 
-      {/* Add Category Button */}
-      <div className="flex justify-center">
-        <button
-          className="btn btn-primary"
-          onClick={() => setIsAddingCategory(!isAddingCategory)}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Category
-        </button>
-      </div>
 
       {/* Category Form */}
       {isAddingCategory && (
@@ -138,6 +111,9 @@ export const TaskList: React.FC = () => {
             ))}
         </div>
       )}
+      
+      {/* Bottom Toolbar */}
+      <BottomToolbar onAddCategory={() => setIsAddingCategory(!isAddingCategory)} />
     </div>
   );
 };
