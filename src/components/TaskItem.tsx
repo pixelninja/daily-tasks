@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import confetti from 'canvas-confetti';
 import type { Task } from '../utils/types';
 import { useTaskContext } from '../contexts/TaskContext';
-import { triggerNyanCat, triggerRaptor } from './NyanCat';
+import { triggerNyanCat, triggerRaptor, triggerEmojiParade, triggerUnicorn, triggerBalloons } from './celebrations';
 
 interface TaskItemProps {
   task: Task;
@@ -36,8 +36,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
       } else if (randomChoice < 0.4) {
         // 20% chance for Raptor!
         triggerRaptor();
+      } else if (randomChoice < 0.6) {
+        // 20% chance for Emoji Parade!
+        triggerEmojiParade();
+      } else if (randomChoice < 0.8) {
+        // 20% chance for Unicorn!
+        triggerUnicorn();
+      } else if (randomChoice < 0.9) {
+        // 10% chance for Balloons!
+        triggerBalloons();
       } else {
-        // 60% chance for confetti
+        // 10% chance for confetti
         if (checkboxRef.current) {
           const rect = checkboxRef.current.getBoundingClientRect();
           const x = (rect.left + rect.width / 2) / window.innerWidth;
