@@ -90,7 +90,17 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
 
   return (
     <div className="card bg-base-100 shadow-lg border border-base-300 rounded-md mb-6">
-      <div className="card-body p-6">
+      {/* Progress Bar - Top of card */}
+      {totalTasks > 0 && (
+        <div className="w-full bg-base-300 h-1">
+          <div
+            className="bg-primary h-1 transition-all duration-300"
+            style={{ width: `${completionPercentage}%` }}
+          />
+        </div>
+      )}
+      
+      <div className="card-body p-4">
         {/* Category Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3 flex-1">
@@ -104,7 +114,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
             {isEditing ? (
               <input
                 type="text"
-                className="input input-bordered input-sm flex-1 max-w-xs"
+                className="input input-bordered input-sm flex-1 max-w-xs text-base"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 onKeyDown={handleKeyPress}
@@ -120,10 +130,10 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
                   {category.name}
                 </h2>
                 
-                {/* Progress Badge */}
-                <div className="badge badge-outline">
-                  {completedTasks}/{totalTasks}
-                </div>
+                {/* Progress Count */}
+                <span className="text-xs text-base-content/60">
+                  ({completedTasks}/{totalTasks})
+                </span>
               </div>
             )}
           </div>
@@ -142,15 +152,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
             
             {!isEditing && (
               <>
-                <button
-                  className="btn btn-ghost btn-sm btn-square"
-                  onClick={handleEditCategory}
-                  title="Edit category"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
                 
                 <button
                   className="btn btn-ghost btn-sm btn-square text-error hover:bg-error hover:text-error-content"
@@ -166,15 +167,6 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
           </div>
         </div>
 
-        {/* Progress Bar */}
-        {totalTasks > 0 && (
-          <div className="w-full bg-base-300 rounded-full h-2 mb-4">
-            <div
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${completionPercentage}%` }}
-            />
-          </div>
-        )}
 
         {/* Add Task Form */}
         {isAddingTask && (

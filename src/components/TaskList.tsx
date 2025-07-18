@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTaskContext } from '../contexts/TaskContext';
 import { CategorySection } from './CategorySection';
 import { CategoryForm } from './CategoryForm';
@@ -7,6 +7,17 @@ import { BottomToolbar } from './BottomToolbar';
 export const TaskList: React.FC = () => {
   const { state } = useTaskContext();
   const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const categoryFormRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll to category form when it opens
+  useEffect(() => {
+    if (isAddingCategory && categoryFormRef.current) {
+      categoryFormRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  }, [isAddingCategory]);
 
   // Get tasks grouped by category
   const getTasksByCategory = (categoryId: string) => {
@@ -44,24 +55,11 @@ export const TaskList: React.FC = () => {
   return (
     <div className="space-y-6 pb-24">
 
-      {/* Header with overall progress */}
-      <div className="card bg-base-100 shadow-lg border border-base-300 rounded-md">
-        <div className="card-body p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="card-title text-2xl">Daily Tasks</h1>
-          </div>
-          
-        </div>
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-base-content">Daily Tasks</h1>
       </div>
 
-
-      {/* Category Form */}
-      {isAddingCategory && (
-        <CategoryForm
-          onSuccess={() => setIsAddingCategory(false)}
-          onCancel={() => setIsAddingCategory(false)}
-        />
-      )}
 
       {/* Categories */}
       {state.categories.length === 0 ? (
@@ -71,7 +69,7 @@ export const TaskList: React.FC = () => {
           </svg>
           <h2 className="text-xl font-semibold mb-2">No Categories Yet</h2>
           <p className="text-base-content/60 mb-4">
-            Create your first category to start organizing your daily tasks.
+            Create your first category to start organising your daily tasks.
           </p>
           <button
             className="btn btn-primary"
@@ -91,6 +89,16 @@ export const TaskList: React.FC = () => {
                 tasks={getTasksByCategory(category.id)}
               />
             ))}
+          
+          {/* Category Form - at end of categories */}
+          {isAddingCategory && (
+            <div ref={categoryFormRef}>
+              <CategoryForm
+                onSuccess={() => setIsAddingCategory(false)}
+                onCancel={() => setIsAddingCategory(false)}
+              />
+            </div>
+          )}
         </div>
       )}
       

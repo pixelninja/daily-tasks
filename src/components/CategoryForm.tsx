@@ -61,18 +61,18 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ onSuccess, onCancel 
 
   return (
     <div className="card bg-base-100 shadow-lg border border-base-300 rounded-md">
-      <div className="card-body p-6">
+      <div className="card-body p-4">
         <h3 className="card-title mb-4">Add New Category</h3>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="form-control">
-            <label className="label">
+            <label className="label mb-2">
               <span className="label-text">Category Name</span>
             </label>
             <input
               type="text"
               placeholder="Enter category name..."
-              className="input input-bordered input-primary w-full"
+              className="input input-bordered input-primary w-full text-base"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               onKeyDown={handleKeyPress}
@@ -82,8 +82,8 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ onSuccess, onCancel 
           </div>
 
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Color</span>
+            <label className="label mb-2">
+              <span className="label-text">Colour</span>
             </label>
             <div className="flex flex-wrap gap-2">
               {predefinedColors.map(color => (
@@ -103,18 +103,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ onSuccess, onCancel 
                   title={`Select ${color}`}
                 />
               ))}
-            </div>
-            
-            {/* Custom color input */}
-            <div className="mt-2">
-              <input
-                type="color"
-                className="w-full h-10 rounded-lg border-2 border-base-300 cursor-pointer"
-                value={formData.color}
-                onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
-                disabled={isSubmitting}
-                title="Choose custom color"
-              />
             </div>
           </div>
 

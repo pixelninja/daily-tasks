@@ -58,7 +58,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
         <input
           type="text"
           placeholder="Enter new task..."
-          className="input input-bordered input-primary w-full"
+          className="input input-bordered input-primary w-full text-base"
           value={formData.title}
           onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           onKeyDown={handleKeyPress}
@@ -70,7 +70,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onSuccess }) => 
       {!categoryId && (
         <div className="form-control">
           <select
-            className="select select-bordered select-primary w-full"
+            className="select select-bordered select-primary w-full text-base"
             value={formData.categoryId}
             onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))}
             disabled={isSubmitting}
