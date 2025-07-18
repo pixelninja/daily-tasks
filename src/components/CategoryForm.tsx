@@ -60,7 +60,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ onSuccess, onCancel 
   };
 
   return (
-    <div className="card bg-base-100 shadow-lg border border-base-300">
+    <div className="card bg-base-100 shadow-lg border border-base-300 rounded-md">
       <div className="card-body p-6">
         <h3 className="card-title mb-4">Add New Category</h3>
         

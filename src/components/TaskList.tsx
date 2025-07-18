@@ -18,7 +18,6 @@ export const TaskList: React.FC = () => {
   // Calculate overall progress
   const totalTasks = state.tasks.length;
   const completedTasks = state.tasks.filter(task => task.completed).length;
-  const overallProgress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   if (state.isLoading) {
     return (
@@ -46,29 +45,12 @@ export const TaskList: React.FC = () => {
     <div className="space-y-6 pb-24">
 
       {/* Header with overall progress */}
-      <div className="card bg-base-100 shadow-lg border border-base-300">
+      <div className="card bg-base-100 shadow-lg border border-base-300 rounded-md">
         <div className="card-body p-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="card-title text-2xl">Daily Tasks</h1>
           </div>
           
-          {totalTasks > 0 && (
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Overall Progress</span>
-                <span>{completedTasks}/{totalTasks} tasks</span>
-              </div>
-              <div className="w-full bg-base-300 rounded-full h-3">
-                <div
-                  className="bg-primary h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${overallProgress}%` }}
-                />
-              </div>
-              <div className="text-center text-sm text-base-content/60">
-                {overallProgress.toFixed(1)}% Complete
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -113,7 +95,11 @@ export const TaskList: React.FC = () => {
       )}
       
       {/* Bottom Toolbar */}
-      <BottomToolbar onAddCategory={() => setIsAddingCategory(!isAddingCategory)} />
+      <BottomToolbar 
+        onAddCategory={() => setIsAddingCategory(!isAddingCategory)}
+        totalTasks={totalTasks}
+        completedTasks={completedTasks}
+      />
     </div>
   );
 };

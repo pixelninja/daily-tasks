@@ -89,7 +89,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
   };
 
   return (
-    <div className="card bg-base-100 shadow-lg border border-base-300 mb-6">
+    <div className="card bg-base-100 shadow-lg border border-base-300 rounded-md mb-6">
       <div className="card-body p-6">
         {/* Category Header */}
         <div className="flex items-center justify-between mb-4">

@@ -68,7 +68,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
       ref={setNodeRef}
       style={style}
       className={`
-        card bg-base-100 shadow-sm border border-base-300 mb-2 transition-all duration-200
+        card bg-base-100 shadow-sm border border-base-300 rounded-md mb-2 transition-all duration-200
         ${isSortableDragging ? 'opacity-50 rotate-2 z-50' : 'hover:shadow-md'}
         ${task.completed ? 'opacity-75' : ''}
       `}
