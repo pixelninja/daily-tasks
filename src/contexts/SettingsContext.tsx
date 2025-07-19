@@ -3,16 +3,19 @@ import type { ReactNode } from 'react';
 
 export interface SettingsState {
   dailyResetEnabled: boolean;
+  animationsEnabled: boolean;
   isLoading: boolean;
 }
 
 export type SettingsAction = 
   | { type: 'SET_DAILY_RESET'; payload: boolean }
+  | { type: 'SET_ANIMATIONS'; payload: boolean }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'LOAD_SETTINGS'; payload: SettingsState };
 
 const initialState: SettingsState = {
   dailyResetEnabled: true,
+  animationsEnabled: true,
   isLoading: true,
 };
 
@@ -22,6 +25,11 @@ const settingsReducer = (state: SettingsState, action: SettingsAction): Settings
       return {
         ...state,
         dailyResetEnabled: action.payload,
+      };
+    case 'SET_ANIMATIONS':
+      return {
+        ...state,
+        animationsEnabled: action.payload,
       };
     case 'SET_LOADING':
       return {
@@ -42,6 +50,7 @@ interface SettingsContextType {
   state: SettingsState;
   actions: {
     setDailyResetEnabled: (enabled: boolean) => Promise<void>;
+    setAnimationsEnabled: (enabled: boolean) => Promise<void>;
   };
 }
 
@@ -75,6 +84,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             type: 'LOAD_SETTINGS', 
             payload: {
               dailyResetEnabled: parsedSettings.dailyResetEnabled ?? true,
+              animationsEnabled: parsedSettings.animationsEnabled ?? true,
               isLoading: false,
             }
           });
@@ -96,20 +106,26 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
       try {
         const settingsToSave = {
           dailyResetEnabled: state.dailyResetEnabled,
+          animationsEnabled: state.animationsEnabled,
         };
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsToSave));
       } catch (error) {
         console.error('Failed to save settings:', error);
       }
     }
-  }, [state.dailyResetEnabled, state.isLoading]);
+  }, [state.dailyResetEnabled, state.animationsEnabled, state.isLoading]);
 
   const setDailyResetEnabled = async (enabled: boolean): Promise<void> => {
     dispatch({ type: 'SET_DAILY_RESET', payload: enabled });
   };
 
+  const setAnimationsEnabled = async (enabled: boolean): Promise<void> => {
+    dispatch({ type: 'SET_ANIMATIONS', payload: enabled });
+  };
+
   const actions = {
     setDailyResetEnabled,
+    setAnimationsEnabled,
   };
 
   return (

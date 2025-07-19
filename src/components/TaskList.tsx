@@ -69,19 +69,28 @@ export const TaskList: React.FC = () => {
               </svg>
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
-              <li className="menu-title">Settings</li>
+              <li className="menu-title !p-2">Settings</li>
               <li>
-                <div className="form-control">
-                  <label className="label cursor-pointer">
-                    <span className="label-text">Daily Reset</span>
-                    <input 
-                      type="checkbox" 
-                      className="toggle toggle-primary" 
-                      checked={settingsState.dailyResetEnabled}
-                      onChange={(e) => settingsActions.setDailyResetEnabled(e.target.checked)}
-                    />
-                  </label>
-                </div>
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                  <span className="label-text">Daily Reset</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle toggle-primary" 
+                    checked={settingsState.dailyResetEnabled}
+                    onChange={(e) => settingsActions.setDailyResetEnabled(e.target.checked)}
+                  />
+                </label>
+              </li>
+              <li>
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                  <span className="label-text">The Fun Zone</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle toggle-primary" 
+                    checked={settingsState.animationsEnabled}
+                    onChange={(e) => settingsActions.setAnimationsEnabled(e.target.checked)}
+                  />
+                </label>
               </li>
             </ul>
           </div>

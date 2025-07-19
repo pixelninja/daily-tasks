@@ -4,6 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import confetti from 'canvas-confetti';
 import type { Task } from '../utils/types';
 import { useTaskContext } from '../contexts/TaskContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { triggerNyanCat, triggerRaptor, triggerEmojiParade, triggerUnicorn, triggerBalloons } from './celebrations';
 
 interface TaskItemProps {
@@ -12,6 +13,7 @@ interface TaskItemProps {
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const { actions } = useTaskContext();
+  const { state: settingsState } = useSettings();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -27,7 +29,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 
   const handleToggle = async () => {
     // If task is being completed (not uncompleted), show random celebration!
-    if (!task.completed) {
+    if (!task.completed && settingsState.animationsEnabled) {
       const randomChoice = Math.random();
       
       if (randomChoice < 0.2) {
