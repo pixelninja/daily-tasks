@@ -186,6 +186,18 @@ export const TaskList: React.FC = () => {
                   </select>
                 </div>
               </li>
+              <li className="menu-title !p-2">Notes</li>
+              <li>
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                  <span className="label-text">Enable Notes</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle toggle-primary" 
+                    checked={settingsState.notesEnabled}
+                    onChange={(e) => settingsActions.setNotesEnabled(e.target.checked)}
+                  />
+                </label>
+              </li>
               <li className="menu-title !p-2">Time Tracker</li>
               <li>
                 <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">

@@ -18,6 +18,9 @@ export interface SettingsState {
   selectedTheme: string;
   appTitle: string;
   timeTracker: TrackerSettings;
+  notesEnabled: boolean;
+  notesTitle: string;
+  notesContent: string;
   isLoading: boolean;
 }
 
@@ -30,6 +33,9 @@ export type SettingsAction =
   | { type: 'SET_TRACKER_VALUE'; payload: number }
   | { type: 'SET_TRACKER_CONFIG'; payload: Partial<TrackerSettings> }
   | { type: 'RESET_TRACKER_VALUE' }
+  | { type: 'SET_NOTES_ENABLED'; payload: boolean }
+  | { type: 'SET_NOTES_TITLE'; payload: string }
+  | { type: 'SET_NOTES_CONTENT'; payload: string }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'LOAD_SETTINGS'; payload: SettingsState };
 
@@ -48,6 +54,9 @@ const initialState: SettingsState = {
     increment: 5,
     unit: 'minutes',
   },
+  notesEnabled: false,
+  notesTitle: 'Notes',
+  notesContent: '',
   isLoading: true,
 };
 
@@ -105,6 +114,21 @@ const settingsReducer = (state: SettingsState, action: SettingsAction): Settings
           currentValue: state.timeTracker.startValue,
         },
       };
+    case 'SET_NOTES_ENABLED':
+      return {
+        ...state,
+        notesEnabled: action.payload,
+      };
+    case 'SET_NOTES_TITLE':
+      return {
+        ...state,
+        notesTitle: action.payload,
+      };
+    case 'SET_NOTES_CONTENT':
+      return {
+        ...state,
+        notesContent: action.payload,
+      };
     case 'SET_LOADING':
       return {
         ...state,
@@ -131,6 +155,9 @@ interface SettingsContextType {
     setTrackerValue: (value: number) => Promise<void>;
     setTrackerConfig: (config: Partial<TrackerSettings>) => Promise<void>;
     resetTrackerValue: () => Promise<void>;
+    setNotesEnabled: (enabled: boolean) => Promise<void>;
+    setNotesTitle: (title: string) => Promise<void>;
+    setNotesContent: (content: string) => Promise<void>;
   };
 }
 
@@ -177,6 +204,9 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                 increment: parsedSettings.timeTracker?.increment ?? 5,
                 unit: parsedSettings.timeTracker?.unit ?? 'minutes',
               },
+              notesEnabled: parsedSettings.notesEnabled ?? false,
+              notesTitle: parsedSettings.notesTitle ?? 'Notes',
+              notesContent: parsedSettings.notesContent ?? '',
               isLoading: false,
             }
           });
@@ -202,13 +232,16 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
           selectedTheme: state.selectedTheme,
           appTitle: state.appTitle,
           timeTracker: state.timeTracker,
+          notesEnabled: state.notesEnabled,
+          notesTitle: state.notesTitle,
+          notesContent: state.notesContent,
         };
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsToSave));
       } catch (error) {
         console.error('Failed to save settings:', error);
       }
     }
-  }, [state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.timeTracker, state.isLoading]);
+  }, [state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.timeTracker, state.notesEnabled, state.notesTitle, state.notesContent, state.isLoading]);
 
   const setDailyResetEnabled = async (enabled: boolean): Promise<void> => {
     dispatch({ type: 'SET_DAILY_RESET', payload: enabled });
@@ -242,6 +275,18 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     dispatch({ type: 'RESET_TRACKER_VALUE' });
   };
 
+  const setNotesEnabled = async (enabled: boolean): Promise<void> => {
+    dispatch({ type: 'SET_NOTES_ENABLED', payload: enabled });
+  };
+
+  const setNotesTitle = async (title: string): Promise<void> => {
+    dispatch({ type: 'SET_NOTES_TITLE', payload: title });
+  };
+
+  const setNotesContent = async (content: string): Promise<void> => {
+    dispatch({ type: 'SET_NOTES_CONTENT', payload: content });
+  };
+
   const actions = {
     setDailyResetEnabled,
     setAnimationsEnabled,
@@ -251,6 +296,9 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     setTrackerValue,
     setTrackerConfig,
     resetTrackerValue,
+    setNotesEnabled,
+    setNotesTitle,
+    setNotesContent,
   };
 
   return (
