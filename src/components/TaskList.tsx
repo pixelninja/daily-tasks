@@ -4,6 +4,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { CategorySection } from './CategorySection';
 import { CategoryForm } from './CategoryForm';
 import { BottomToolbar } from './BottomToolbar';
+import { TimeTracker } from './TimeTracker';
 
 // Available DaisyUI themes
 const AVAILABLE_THEMES = [
@@ -185,11 +186,104 @@ export const TaskList: React.FC = () => {
                   </select>
                 </div>
               </li>
+              <li className="menu-title !p-2">Time Tracker</li>
+              <li>
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                  <span className="label-text">Enable Tracker</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle toggle-primary" 
+                    checked={settingsState.timeTracker.enabled}
+                    onChange={(e) => settingsActions.setTrackerEnabled(e.target.checked)}
+                  />
+                </label>
+              </li>
+              {settingsState.timeTracker.enabled && (
+                <>
+                  <li>
+                    <div className="flex justify-between items-center w-full p-2">
+                      <span className="label-text">Label</span>
+                      <input 
+                        type="text" 
+                        className="input input-primary input-xs w-24" 
+                        value={settingsState.timeTracker.label}
+                        onChange={(e) => settingsActions.setTrackerConfig({ label: e.target.value })}
+                        maxLength={20}
+                      />
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex justify-between items-center w-full p-2">
+                      <span className="label-text">Start Value</span>
+                      <input 
+                        type="number" 
+                        className="input input-primary input-xs w-16" 
+                        value={settingsState.timeTracker.startValue}
+                        onChange={(e) => settingsActions.setTrackerConfig({ startValue: parseInt(e.target.value) || 0 })}
+                        min={settingsState.timeTracker.minValue}
+                        max={settingsState.timeTracker.maxValue}
+                      />
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex justify-between items-center w-full p-2">
+                      <span className="label-text">Range</span>
+                      <div className="flex gap-1 items-center">
+                        <input 
+                          type="number" 
+                          className="input input-primary input-xs w-12" 
+                          value={settingsState.timeTracker.minValue}
+                          onChange={(e) => settingsActions.setTrackerConfig({ minValue: parseInt(e.target.value) || 0 })}
+                          min={0}
+                        />
+                        <span className="text-xs">-</span>
+                        <input 
+                          type="number" 
+                          className="input input-primary input-xs w-12" 
+                          value={settingsState.timeTracker.maxValue}
+                          onChange={(e) => settingsActions.setTrackerConfig({ maxValue: parseInt(e.target.value) || 100 })}
+                          min={settingsState.timeTracker.minValue}
+                        />
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex justify-between items-center w-full p-2">
+                      <span className="label-text">Increment</span>
+                      <input 
+                        type="number" 
+                        className="input input-primary input-xs w-16" 
+                        value={settingsState.timeTracker.increment}
+                        onChange={(e) => settingsActions.setTrackerConfig({ increment: parseInt(e.target.value) || 1 })}
+                        min={1}
+                      />
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex justify-between items-center w-full p-2">
+                      <span className="label-text">Unit</span>
+                      <select 
+                        className="select select-primary select-xs w-20" 
+                        value={settingsState.timeTracker.unit}
+                        onChange={(e) => settingsActions.setTrackerConfig({ unit: e.target.value })}
+                      >
+                        <option value="minutes">min</option>
+                        <option value="hours">hrs</option>
+                        <option value="sessions">ses</option>
+                        <option value="glasses">gls</option>
+                        <option value="pages">pgs</option>
+                      </select>
+                    </div>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
       </div>
 
+      {/* Time Tracker */}
+      <TimeTracker />
 
       {/* Categories */}
       {state.categories.length === 0 ? (
