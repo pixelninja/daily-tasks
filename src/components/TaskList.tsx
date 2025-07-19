@@ -31,7 +31,10 @@ export const TaskList: React.FC = () => {
   const { state } = useTaskContext();
   const { state: settingsState, actions: settingsActions } = useSettings();
   const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
   const categoryFormRef = useRef<HTMLDivElement>(null);
+  const titleInputRef = useRef<HTMLInputElement>(null);
   
   // Scroll to category form when it opens
   useEffect(() => {
@@ -42,6 +45,39 @@ export const TaskList: React.FC = () => {
       });
     }
   }, [isAddingCategory]);
+
+  // Focus title input when editing starts
+  useEffect(() => {
+    if (isEditingTitle && titleInputRef.current) {
+      titleInputRef.current.focus();
+      titleInputRef.current.select();
+    }
+  }, [isEditingTitle]);
+
+  const handleTitleClick = () => {
+    setEditTitle(settingsState.appTitle);
+    setIsEditingTitle(true);
+  };
+
+  const handleTitleSave = () => {
+    const trimmedTitle = editTitle.trim();
+    if (trimmedTitle && trimmedTitle !== settingsState.appTitle) {
+      settingsActions.setAppTitle(trimmedTitle);
+    }
+    setIsEditingTitle(false);
+  };
+
+  const handleTitleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleTitleSave();
+    } else if (e.key === 'Escape') {
+      setIsEditingTitle(false);
+    }
+  };
+
+  const handleTitleBlur = () => {
+    handleTitleSave();
+  };
 
   // Get tasks grouped by category
   const getTasksByCategory = (categoryId: string) => {
@@ -82,7 +118,26 @@ export const TaskList: React.FC = () => {
       {/* Header */}
       <div className="mb-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-base-content">Daily Tasks</h1>
+          {isEditingTitle ? (
+            <input
+              ref={titleInputRef}
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onKeyDown={handleTitleKeyPress}
+              onBlur={handleTitleBlur}
+              className="text-2xl font-bold text-base-content bg-transparent border-2 border-primary rounded px-2 py-1 focus:outline-none focus:border-primary-focus"
+              maxLength={50}
+            />
+          ) : (
+            <h1 
+              className="text-2xl font-bold text-base-content cursor-pointer hover:text-primary transition-colors duration-200"
+              onClick={handleTitleClick}
+              title="Click to edit title"
+            >
+              {settingsState.appTitle}
+            </h1>
+          )}
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" title="Settings">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

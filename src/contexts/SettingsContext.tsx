@@ -5,6 +5,7 @@ export interface SettingsState {
   dailyResetEnabled: boolean;
   animationsEnabled: boolean;
   selectedTheme: string;
+  appTitle: string;
   isLoading: boolean;
 }
 
@@ -12,6 +13,7 @@ export type SettingsAction =
   | { type: 'SET_DAILY_RESET'; payload: boolean }
   | { type: 'SET_ANIMATIONS'; payload: boolean }
   | { type: 'SET_THEME'; payload: string }
+  | { type: 'SET_APP_TITLE'; payload: string }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'LOAD_SETTINGS'; payload: SettingsState };
 
@@ -19,6 +21,7 @@ const initialState: SettingsState = {
   dailyResetEnabled: true,
   animationsEnabled: true,
   selectedTheme: 'cyberpunk',
+  appTitle: 'Daily Tasks',
   isLoading: true,
 };
 
@@ -38,6 +41,11 @@ const settingsReducer = (state: SettingsState, action: SettingsAction): Settings
       return {
         ...state,
         selectedTheme: action.payload,
+      };
+    case 'SET_APP_TITLE':
+      return {
+        ...state,
+        appTitle: action.payload,
       };
     case 'SET_LOADING':
       return {
@@ -60,6 +68,7 @@ interface SettingsContextType {
     setDailyResetEnabled: (enabled: boolean) => Promise<void>;
     setAnimationsEnabled: (enabled: boolean) => Promise<void>;
     setSelectedTheme: (theme: string) => Promise<void>;
+    setAppTitle: (title: string) => Promise<void>;
   };
 }
 
@@ -95,6 +104,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
               dailyResetEnabled: parsedSettings.dailyResetEnabled ?? true,
               animationsEnabled: parsedSettings.animationsEnabled ?? true,
               selectedTheme: parsedSettings.selectedTheme ?? 'cyberpunk',
+              appTitle: parsedSettings.appTitle ?? 'Daily Tasks',
               isLoading: false,
             }
           });
@@ -118,13 +128,14 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
           dailyResetEnabled: state.dailyResetEnabled,
           animationsEnabled: state.animationsEnabled,
           selectedTheme: state.selectedTheme,
+          appTitle: state.appTitle,
         };
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsToSave));
       } catch (error) {
         console.error('Failed to save settings:', error);
       }
     }
-  }, [state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.isLoading]);
+  }, [state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.isLoading]);
 
   const setDailyResetEnabled = async (enabled: boolean): Promise<void> => {
     dispatch({ type: 'SET_DAILY_RESET', payload: enabled });
@@ -138,10 +149,15 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     dispatch({ type: 'SET_THEME', payload: theme });
   };
 
+  const setAppTitle = async (title: string): Promise<void> => {
+    dispatch({ type: 'SET_APP_TITLE', payload: title });
+  };
+
   const actions = {
     setDailyResetEnabled,
     setAnimationsEnabled,
     setSelectedTheme,
+    setAppTitle,
   };
 
   return (
