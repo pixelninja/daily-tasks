@@ -4,18 +4,21 @@ import type { ReactNode } from 'react';
 export interface SettingsState {
   dailyResetEnabled: boolean;
   animationsEnabled: boolean;
+  selectedTheme: string;
   isLoading: boolean;
 }
 
 export type SettingsAction = 
   | { type: 'SET_DAILY_RESET'; payload: boolean }
   | { type: 'SET_ANIMATIONS'; payload: boolean }
+  | { type: 'SET_THEME'; payload: string }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'LOAD_SETTINGS'; payload: SettingsState };
 
 const initialState: SettingsState = {
   dailyResetEnabled: true,
   animationsEnabled: true,
+  selectedTheme: 'cyberpunk',
   isLoading: true,
 };
 
@@ -30,6 +33,11 @@ const settingsReducer = (state: SettingsState, action: SettingsAction): Settings
       return {
         ...state,
         animationsEnabled: action.payload,
+      };
+    case 'SET_THEME':
+      return {
+        ...state,
+        selectedTheme: action.payload,
       };
     case 'SET_LOADING':
       return {
@@ -51,6 +59,7 @@ interface SettingsContextType {
   actions: {
     setDailyResetEnabled: (enabled: boolean) => Promise<void>;
     setAnimationsEnabled: (enabled: boolean) => Promise<void>;
+    setSelectedTheme: (theme: string) => Promise<void>;
   };
 }
 
@@ -85,6 +94,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             payload: {
               dailyResetEnabled: parsedSettings.dailyResetEnabled ?? true,
               animationsEnabled: parsedSettings.animationsEnabled ?? true,
+              selectedTheme: parsedSettings.selectedTheme ?? 'cyberpunk',
               isLoading: false,
             }
           });
@@ -107,13 +117,14 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
         const settingsToSave = {
           dailyResetEnabled: state.dailyResetEnabled,
           animationsEnabled: state.animationsEnabled,
+          selectedTheme: state.selectedTheme,
         };
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsToSave));
       } catch (error) {
         console.error('Failed to save settings:', error);
       }
     }
-  }, [state.dailyResetEnabled, state.animationsEnabled, state.isLoading]);
+  }, [state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.isLoading]);
 
   const setDailyResetEnabled = async (enabled: boolean): Promise<void> => {
     dispatch({ type: 'SET_DAILY_RESET', payload: enabled });
@@ -123,9 +134,14 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     dispatch({ type: 'SET_ANIMATIONS', payload: enabled });
   };
 
+  const setSelectedTheme = async (theme: string): Promise<void> => {
+    dispatch({ type: 'SET_THEME', payload: theme });
+  };
+
   const actions = {
     setDailyResetEnabled,
     setAnimationsEnabled,
+    setSelectedTheme,
   };
 
   return (

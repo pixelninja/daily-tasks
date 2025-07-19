@@ -5,6 +5,28 @@ import { CategorySection } from './CategorySection';
 import { CategoryForm } from './CategoryForm';
 import { BottomToolbar } from './BottomToolbar';
 
+// Available DaisyUI themes
+const AVAILABLE_THEMES = [
+  { name: 'cyberpunk', label: 'Cyberpunk' },
+  { name: 'light', label: 'Light' },
+  { name: 'dark', label: 'Dark' },
+  { name: 'synthwave', label: 'Synthwave' },
+  { name: 'retro', label: 'Retro' },
+  { name: 'dracula', label: 'Dracula' },
+  { name: 'luxury', label: 'Luxury' },
+  { name: 'business', label: 'Business' },
+  { name: 'forest', label: 'Forest' },
+  { name: 'aqua', label: 'Aqua' },
+  { name: 'lofi', label: 'Lo-Fi' },
+  { name: 'pastel', label: 'Pastel' },
+  { name: 'fantasy', label: 'Fantasy' },
+  { name: 'night', label: 'Night' },
+  { name: 'coffee', label: 'Coffee' },
+  { name: 'winter', label: 'Winter' },
+  { name: 'sunset', label: 'Sunset' },
+  { name: 'nord', label: 'Nord' },
+];
+
 export const TaskList: React.FC = () => {
   const { state } = useTaskContext();
   const { state: settingsState, actions: settingsActions } = useSettings();
@@ -91,6 +113,22 @@ export const TaskList: React.FC = () => {
                     onChange={(e) => settingsActions.setAnimationsEnabled(e.target.checked)}
                   />
                 </label>
+              </li>
+              <li>
+                <div className="flex justify-between items-center w-full p-2">
+                  <span className="label-text">Theme</span>
+                  <select 
+                    className="select select-primary select-sm w-32" 
+                    value={settingsState.selectedTheme}
+                    onChange={(e) => settingsActions.setSelectedTheme(e.target.value)}
+                  >
+                    {AVAILABLE_THEMES.map((theme) => (
+                      <option key={theme.name} value={theme.name}>
+                        {theme.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </li>
             </ul>
           </div>

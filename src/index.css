@@ -17,7 +17,7 @@
 
 /* DaisyUI Plugin */
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cyberpunk;
+  themes: light --default, dark --prefersdark, cyberpunk, synthwave, retro, valentine, dracula, luxury, business, forest, aqua, lofi, pastel, fantasy, night, coffee, winter, sunset, nord;
 }
 
 /* PWA Safe Area Support */
