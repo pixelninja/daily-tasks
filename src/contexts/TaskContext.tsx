@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { AppState, AppAction, Task, Category } from '../utils/types';
 import { taskStorage, categoryStorage, appStorage, migrateData } from '../utils/storage';
 import { isNewDay, getMidnightTimestamp } from '../utils/dateUtils';
+import { useSettings } from './SettingsContext';
 
 // Initial state
 const initialState: AppState = {
@@ -159,23 +160,12 @@ interface TaskProviderProps {
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
+  const { state: settingsState } = useSettings();
 
   // Load data on mount
   useEffect(() => {
     loadData();
   }, []);
-
-  // Check for daily reset after data is loaded
-  useEffect(() => {
-    if (!state.isLoading) {
-      checkDailyReset();
-      
-      // Check for daily reset every minute
-      const interval = setInterval(checkDailyReset, 60000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [state.isLoading]);
 
   const loadData = async (): Promise<void> => {
     try {
@@ -339,7 +329,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     }
   };
 
-  const checkDailyReset = async (): Promise<void> => {
+  const checkDailyReset = useCallback(async (): Promise<void> => {
+    // Skip daily reset check if it's disabled in settings
+    if (!settingsState.dailyResetEnabled) {
+      return;
+    }
+    
     try {
       const lastResetDate = await appStorage.getLastResetDate();
       const currentDate = getMidnightTimestamp();
@@ -355,7 +350,19 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Error checking daily reset:', error);
     }
-  };
+  }, [settingsState.dailyResetEnabled]);
+
+  // Check for daily reset after data is loaded
+  useEffect(() => {
+    if (!state.isLoading && !settingsState.isLoading) {
+      checkDailyReset();
+      
+      // Check for daily reset every minute
+      const interval = setInterval(checkDailyReset, 60000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [state.isLoading, settingsState.isLoading, settingsState.dailyResetEnabled, checkDailyReset]);
 
   const resetDailyTasks = async (): Promise<void> => {
     try {

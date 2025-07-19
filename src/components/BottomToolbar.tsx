@@ -5,9 +5,10 @@ interface BottomToolbarProps {
   onAddCategory: () => void;
   totalTasks: number;
   completedTasks: number;
+  dailyResetEnabled: boolean;
 }
 
-export const BottomToolbar: React.FC<BottomToolbarProps> = ({ onAddCategory, totalTasks, completedTasks }) => {
+export const BottomToolbar: React.FC<BottomToolbarProps> = ({ onAddCategory, totalTasks, completedTasks, dailyResetEnabled }) => {
   const { timeUntilReset, manualReset } = useDailyReset();
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -45,20 +46,24 @@ export const BottomToolbar: React.FC<BottomToolbarProps> = ({ onAddCategory, tot
       <div className="px-4 pt-4 pb-safe">
         <div className="flex items-center justify-between gap-4 max-w-md mx-auto">
           {/* Reset Section */}
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <button
-              className="btn btn-ghost btn-sm btn-circle flex-shrink-0"
-              onClick={manualReset}
-              title="Reset all tasks now"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </button>
-            <div className="text-sm text-base-content/70 truncate">
-              {timeUntilReset}
+          {dailyResetEnabled ? (
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <button
+                className="btn btn-ghost btn-sm btn-circle flex-shrink-0"
+                onClick={manualReset}
+                title="Reset all tasks now"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+              <div className="text-sm text-base-content/70 truncate">
+                {timeUntilReset}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex-1" />
+          )}
 
           {/* Add Category Button */}
           <button
