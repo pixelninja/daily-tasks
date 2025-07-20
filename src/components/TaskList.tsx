@@ -349,16 +349,16 @@ export const TaskList: React.FC = () => {
               className="card bg-base-100 shadow-sm border border-base-300 border-dashed rounded-md cursor-pointer hover:shadow-md hover:border-primary transition-all duration-200"
               onClick={() => setIsAddingCategory(true)}
             >
-              <div className="card-body p-6 text-center">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="card-body p-4 text-center">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-base-content mb-1">Add Category</h3>
-                    <p className="text-sm text-base-content/60">Create a new category to organize your tasks</p>
+                    <h3 className="text-base font-semibold text-base-content mb-1">Add Category</h3>
+                    <p className="text-xs text-base-content/60">Create a new category to organize your tasks</p>
                   </div>
                 </div>
               </div>

@@ -231,12 +231,12 @@ export const CategorySection: React.FC<CategorySectionProps> = ({ category, task
         {/* Tasks */}
         <div className="space-y-2">
           {tasks.length === 0 ? (
-            <div className="text-center text-base-content/60 py-8">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="text-center text-base-content/60">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-              <p>No tasks yet</p>
-              <p className="text-sm">Click the + button to add your first task</p>
+              <p className="text-sm">No tasks yet</p>
+              <p className="text-xs">Click the + button to add your first task</p>
             </div>
           ) : (
             <>
