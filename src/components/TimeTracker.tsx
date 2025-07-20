@@ -189,7 +189,7 @@ export const TimeTracker: React.FC = () => {
         <div className="card bg-base-100 shadow-sm border border-base-300">
           <div className="card-body p-4">
             {/* Notes Title */}
-            <div className="mb-3">
+            <div>
               {isEditingNotesTitle ? (
                 <input
                   ref={notesTitleInputRef}
@@ -213,7 +213,7 @@ export const TimeTracker: React.FC = () => {
             </div>
 
             {/* Notes Content */}
-            <div className="min-h-[100px]">
+            <div className="min-h-[50px]">
               {isEditingNotesContent ? (
                 <textarea
                   ref={notesContentTextareaRef}
@@ -226,7 +226,7 @@ export const TimeTracker: React.FC = () => {
                 />
               ) : (
                 <div 
-                  className="min-h-[80px] p-3 cursor-pointer hover:bg-base-200 rounded transition-colors duration-200 text-base-content"
+                  className="min-h-[50px] cursor-pointer rounded transition-colors duration-200 text-base-content"
                   onClick={handleNotesContentClick}
                   title="Click to edit notes"
                 >
