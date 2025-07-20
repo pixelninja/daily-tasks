@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDailyReset } from '../hooks/useDailyReset';
 import { useSettings } from '../contexts/SettingsContext';
 
