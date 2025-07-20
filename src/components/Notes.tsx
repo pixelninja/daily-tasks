@@ -126,7 +126,7 @@ export const Notes: React.FC = () => {
               onChange={(e) => setEditNotesTitle(e.target.value)}
               onKeyDown={handleNotesTitleKeyPress}
               onBlur={handleNotesTitleBlur}
-              className="text-lg font-semibold text-base-content bg-transparent border-2 border-primary rounded px-2 py-1 focus:outline-none focus:border-primary-focus w-full"
+              className="text-lg font-semibold text-base-content bg-transparent border-2 border-primary rounded px-2 py-1 focus:outline-none focus:border-primary-focus w-full text-base"
               maxLength={50}
             />
           ) : (
@@ -149,7 +149,7 @@ export const Notes: React.FC = () => {
               onChange={(e) => setEditNotesContent(e.target.value)}
               onKeyDown={handleNotesContentKeyPress}
               onBlur={handleNotesContentBlur}
-              className="w-full h-32 p-3 text-base-content bg-transparent border-2 border-primary rounded resize-none focus:outline-none focus:border-primary-focus"
+              className="w-full h-32 p-3 text-base-content bg-transparent border-2 border-primary rounded resize-none focus:outline-none focus:border-primary-focus text-base"
               placeholder="Enter your notes here...&#10;&#10;Use - or * for bullet points&#10;Ctrl+Enter to save, Esc to cancel"
             />
           ) : (
