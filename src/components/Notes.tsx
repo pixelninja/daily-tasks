@@ -118,7 +118,7 @@ export const Notes: React.FC = () => {
       <div className="card-body p-4">
         {/* Notes Title */}
         <div>
-          {isEditingNotesTitle ? (
+          {isEditingNotesTitle && settingsState.editMode ? (
             <input
               ref={notesTitleInputRef}
               type="text"
@@ -131,9 +131,9 @@ export const Notes: React.FC = () => {
             />
           ) : (
             <h3 
-              className="text-lg font-semibold text-base-content cursor-pointer hover:text-primary transition-colors duration-200"
-              onClick={handleNotesTitleClick}
-              title="Click to edit title"
+              className={`text-lg font-semibold text-base-content ${settingsState.editMode ? 'cursor-pointer hover:text-primary' : ''} transition-colors duration-200`}
+              onClick={settingsState.editMode ? handleNotesTitleClick : undefined}
+              title={settingsState.editMode ? "Click to edit title" : undefined}
             >
               {settingsState.notesTitle}
             </h3>
@@ -142,7 +142,7 @@ export const Notes: React.FC = () => {
 
         {/* Notes Content */}
         <div className="min-h-[50px]">
-          {isEditingNotesContent ? (
+          {isEditingNotesContent && settingsState.editMode ? (
             <textarea
               ref={notesContentTextareaRef}
               value={editNotesContent}
@@ -154,9 +154,9 @@ export const Notes: React.FC = () => {
             />
           ) : (
             <div 
-              className="min-h-[50px] cursor-pointer rounded transition-colors duration-200 text-base-content"
-              onClick={handleNotesContentClick}
-              title="Click to edit notes"
+              className={`min-h-[50px] ${settingsState.editMode ? 'cursor-pointer' : ''} rounded transition-colors duration-200 text-base-content`}
+              onClick={settingsState.editMode ? handleNotesContentClick : undefined}
+              title={settingsState.editMode ? "Click to edit notes" : undefined}
             >
               {formatNotesContent(settingsState.notesContent)}
             </div>

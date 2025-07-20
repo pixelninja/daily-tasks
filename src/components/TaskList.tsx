@@ -120,7 +120,7 @@ export const TaskList: React.FC = () => {
       {/* Header */}
       <div className="mb-6">
         <div className="flex justify-between items-center">
-          {isEditingTitle ? (
+          {isEditingTitle && settingsState.editMode ? (
             <input
               ref={titleInputRef}
               type="text"
@@ -133,9 +133,9 @@ export const TaskList: React.FC = () => {
             />
           ) : (
             <h1 
-              className="text-2xl font-bold text-base-content cursor-pointer hover:text-primary transition-colors duration-200"
-              onClick={handleTitleClick}
-              title="Click to edit title"
+              className={`text-2xl font-bold text-base-content ${settingsState.editMode ? 'cursor-pointer hover:text-primary' : ''} transition-colors duration-200`}
+              onClick={settingsState.editMode ? handleTitleClick : undefined}
+              title={settingsState.editMode ? "Click to edit title" : undefined}
             >
               {settingsState.appTitle}
             </h1>
@@ -149,6 +149,17 @@ export const TaskList: React.FC = () => {
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
               <li className="menu-title !p-2">Settings</li>
+              <li>
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                  <span className="label-text">Edit Mode</span>
+                  <input 
+                    type="checkbox" 
+                    className="toggle toggle-primary" 
+                    checked={settingsState.editMode}
+                    onChange={(e) => settingsActions.setEditMode(e.target.checked)}
+                  />
+                </label>
+              </li>
               <li>
                 <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
                   <span className="label-text">Daily Reset</span>
@@ -311,12 +322,14 @@ export const TaskList: React.FC = () => {
           <p className="text-base-content/60 mb-4">
             Create your first category to start organising your daily tasks.
           </p>
-          <button
-            className="btn btn-primary"
-            onClick={() => setIsAddingCategory(true)}
-          >
-            Create Category
-          </button>
+          {settingsState.editMode && (
+            <button
+              className="btn btn-primary"
+              onClick={() => setIsAddingCategory(true)}
+            >
+              Create Category
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-6">
@@ -330,8 +343,30 @@ export const TaskList: React.FC = () => {
               />
             ))}
           
+          {/* Add Category Card */}
+          {settingsState.editMode && !isAddingCategory && (
+            <div 
+              className="card bg-base-100 shadow-sm border border-base-300 border-dashed rounded-md cursor-pointer hover:shadow-md hover:border-primary transition-all duration-200"
+              onClick={() => setIsAddingCategory(true)}
+            >
+              <div className="card-body p-6 text-center">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-base-content mb-1">Add Category</h3>
+                    <p className="text-sm text-base-content/60">Create a new category to organize your tasks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Category Form - at end of categories */}
-          {isAddingCategory && (
+          {isAddingCategory && settingsState.editMode && (
             <div ref={categoryFormRef}>
               <CategoryForm
                 onSuccess={() => setIsAddingCategory(false)}
@@ -344,7 +379,6 @@ export const TaskList: React.FC = () => {
       
       {/* Bottom Toolbar */}
       <BottomToolbar 
-        onAddCategory={() => setIsAddingCategory(!isAddingCategory)}
         totalTasks={totalTasks}
         completedTasks={completedTasks}
         dailyResetEnabled={settingsState.dailyResetEnabled}

@@ -13,6 +13,7 @@ export interface TrackerSettings {
 }
 
 export interface SettingsState {
+  editMode: boolean;
   dailyResetEnabled: boolean;
   animationsEnabled: boolean;
   selectedTheme: string;
@@ -25,6 +26,7 @@ export interface SettingsState {
 }
 
 export type SettingsAction = 
+  | { type: 'SET_EDIT_MODE'; payload: boolean }
   | { type: 'SET_DAILY_RESET'; payload: boolean }
   | { type: 'SET_ANIMATIONS'; payload: boolean }
   | { type: 'SET_THEME'; payload: string }
@@ -40,6 +42,7 @@ export type SettingsAction =
   | { type: 'LOAD_SETTINGS'; payload: SettingsState };
 
 const initialState: SettingsState = {
+  editMode: true,
   dailyResetEnabled: true,
   animationsEnabled: true,
   selectedTheme: 'cyberpunk',
@@ -62,6 +65,11 @@ const initialState: SettingsState = {
 
 const settingsReducer = (state: SettingsState, action: SettingsAction): SettingsState => {
   switch (action.type) {
+    case 'SET_EDIT_MODE':
+      return {
+        ...state,
+        editMode: action.payload,
+      };
     case 'SET_DAILY_RESET':
       return {
         ...state,
@@ -147,6 +155,7 @@ const settingsReducer = (state: SettingsState, action: SettingsAction): Settings
 interface SettingsContextType {
   state: SettingsState;
   actions: {
+    setEditMode: (enabled: boolean) => Promise<void>;
     setDailyResetEnabled: (enabled: boolean) => Promise<void>;
     setAnimationsEnabled: (enabled: boolean) => Promise<void>;
     setSelectedTheme: (theme: string) => Promise<void>;
@@ -190,6 +199,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
           dispatch({ 
             type: 'LOAD_SETTINGS', 
             payload: {
+              editMode: parsedSettings.editMode ?? true,
               dailyResetEnabled: parsedSettings.dailyResetEnabled ?? true,
               animationsEnabled: parsedSettings.animationsEnabled ?? true,
               selectedTheme: parsedSettings.selectedTheme ?? 'cyberpunk',
@@ -227,6 +237,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     if (!state.isLoading) {
       try {
         const settingsToSave = {
+          editMode: state.editMode,
           dailyResetEnabled: state.dailyResetEnabled,
           animationsEnabled: state.animationsEnabled,
           selectedTheme: state.selectedTheme,
@@ -241,7 +252,11 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
         console.error('Failed to save settings:', error);
       }
     }
-  }, [state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.timeTracker, state.notesEnabled, state.notesTitle, state.notesContent, state.isLoading]);
+  }, [state.editMode, state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.timeTracker, state.notesEnabled, state.notesTitle, state.notesContent, state.isLoading]);
+
+  const setEditMode = async (enabled: boolean): Promise<void> => {
+    dispatch({ type: 'SET_EDIT_MODE', payload: enabled });
+  };
 
   const setDailyResetEnabled = async (enabled: boolean): Promise<void> => {
     dispatch({ type: 'SET_DAILY_RESET', payload: enabled });
@@ -288,6 +303,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
   };
 
   const actions = {
+    setEditMode,
     setDailyResetEnabled,
     setAnimationsEnabled,
     setSelectedTheme,
