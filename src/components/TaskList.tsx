@@ -5,6 +5,7 @@ import { CategorySection } from './CategorySection';
 import { CategoryForm } from './CategoryForm';
 import { BottomToolbar } from './BottomToolbar';
 import { TimeTracker } from './TimeTracker';
+import { Notes } from './Notes';
 
 // Available DaisyUI themes
 const AVAILABLE_THEMES = [
@@ -294,8 +295,11 @@ export const TaskList: React.FC = () => {
         </div>
       </div>
 
-      {/* Time Tracker */}
-      <TimeTracker />
+      {/* Time Tracker and Notes */}
+      <div className="space-y-6">
+        <TimeTracker />
+        <Notes />
+      </div>
 
       {/* Categories */}
       {state.categories.length === 0 ? (
