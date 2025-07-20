@@ -160,7 +160,7 @@ interface TaskProviderProps {
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
-  const { state: settingsState, actions: settingsActions } = useSettings();
+  const { state: settingsState } = useSettings();
 
   // Load data on mount
   useEffect(() => {
@@ -372,11 +372,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       
       dispatch({ type: 'RESET_DAILY_TASKS' });
       dispatch({ type: 'SET_LAST_RESET_DATE', payload: currentDate });
-      
-      // Reset time tracker value if enabled
-      if (settingsState.timeTracker.enabled) {
-        settingsActions.resetTrackerValue();
-      }
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: 'Failed to reset daily tasks' });
       console.error('Error resetting daily tasks:', error);
