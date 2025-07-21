@@ -10,6 +10,7 @@ export interface TrackerSettings {
   maxValue: number;
   increment: number;
   unit: string;
+  customUnit: string;
 }
 
 export interface SettingsState {
@@ -18,7 +19,7 @@ export interface SettingsState {
   animationsEnabled: boolean;
   selectedTheme: string;
   appTitle: string;
-  timeTracker: TrackerSettings;
+  unitTracker: TrackerSettings;
   notesEnabled: boolean;
   notesTitle: string;
   notesContent: string;
@@ -47,15 +48,16 @@ const initialState: SettingsState = {
   animationsEnabled: true,
   selectedTheme: 'cyberpunk',
   appTitle: 'Daily Tasks',
-  timeTracker: {
+  unitTracker: {
     enabled: false,
-    label: 'Screen Time',
+    label: 'Units',
     currentValue: 60, // 1 hour in minutes
     startValue: 60,
     minValue: 0,
     maxValue: 480, // 8 hours in minutes
     increment: 5,
     unit: 'minutes',
+    customUnit: '',
   },
   notesEnabled: false,
   notesTitle: 'Notes',
@@ -93,33 +95,33 @@ const settingsReducer = (state: SettingsState, action: SettingsAction): Settings
     case 'SET_TRACKER_ENABLED':
       return {
         ...state,
-        timeTracker: {
-          ...state.timeTracker,
+        unitTracker: {
+          ...state.unitTracker,
           enabled: action.payload,
         },
       };
     case 'SET_TRACKER_VALUE':
       return {
         ...state,
-        timeTracker: {
-          ...state.timeTracker,
+        unitTracker: {
+          ...state.unitTracker,
           currentValue: action.payload,
         },
       };
     case 'SET_TRACKER_CONFIG':
       return {
         ...state,
-        timeTracker: {
-          ...state.timeTracker,
+        unitTracker: {
+          ...state.unitTracker,
           ...action.payload,
         },
       };
     case 'RESET_TRACKER_VALUE':
       return {
         ...state,
-        timeTracker: {
-          ...state.timeTracker,
-          currentValue: state.timeTracker.startValue,
+        unitTracker: {
+          ...state.unitTracker,
+          currentValue: state.unitTracker.startValue,
         },
       };
     case 'SET_NOTES_ENABLED':
@@ -204,15 +206,16 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
               animationsEnabled: parsedSettings.animationsEnabled ?? true,
               selectedTheme: parsedSettings.selectedTheme ?? 'cyberpunk',
               appTitle: parsedSettings.appTitle ?? 'Daily Tasks',
-              timeTracker: {
-                enabled: parsedSettings.timeTracker?.enabled ?? false,
-                label: parsedSettings.timeTracker?.label ?? 'Screen Time',
-                currentValue: parsedSettings.timeTracker?.currentValue ?? 60,
-                startValue: parsedSettings.timeTracker?.startValue ?? 60,
-                minValue: parsedSettings.timeTracker?.minValue ?? 0,
-                maxValue: parsedSettings.timeTracker?.maxValue ?? 480,
-                increment: parsedSettings.timeTracker?.increment ?? 5,
-                unit: parsedSettings.timeTracker?.unit ?? 'minutes',
+              unitTracker: {
+                enabled: parsedSettings.unitTracker?.enabled ?? parsedSettings.timeTracker?.enabled ?? false,
+                label: parsedSettings.unitTracker?.label ?? parsedSettings.timeTracker?.label ?? 'Units',
+                currentValue: parsedSettings.unitTracker?.currentValue ?? parsedSettings.timeTracker?.currentValue ?? 60,
+                startValue: parsedSettings.unitTracker?.startValue ?? parsedSettings.timeTracker?.startValue ?? 60,
+                minValue: parsedSettings.unitTracker?.minValue ?? parsedSettings.timeTracker?.minValue ?? 0,
+                maxValue: parsedSettings.unitTracker?.maxValue ?? parsedSettings.timeTracker?.maxValue ?? 480,
+                increment: parsedSettings.unitTracker?.increment ?? parsedSettings.timeTracker?.increment ?? 5,
+                unit: parsedSettings.unitTracker?.unit ?? parsedSettings.timeTracker?.unit ?? 'minutes',
+                customUnit: parsedSettings.unitTracker?.customUnit ?? parsedSettings.timeTracker?.customUnit ?? '',
               },
               notesEnabled: parsedSettings.notesEnabled ?? false,
               notesTitle: parsedSettings.notesTitle ?? 'Notes',
@@ -242,7 +245,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
           animationsEnabled: state.animationsEnabled,
           selectedTheme: state.selectedTheme,
           appTitle: state.appTitle,
-          timeTracker: state.timeTracker,
+          unitTracker: state.unitTracker,
           notesEnabled: state.notesEnabled,
           notesTitle: state.notesTitle,
           notesContent: state.notesContent,
@@ -252,7 +255,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
         console.error('Failed to save settings:', error);
       }
     }
-  }, [state.editMode, state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.timeTracker, state.notesEnabled, state.notesTitle, state.notesContent, state.isLoading]);
+  }, [state.editMode, state.dailyResetEnabled, state.animationsEnabled, state.selectedTheme, state.appTitle, state.unitTracker, state.notesEnabled, state.notesTitle, state.notesContent, state.isLoading]);
 
   const setEditMode = async (enabled: boolean): Promise<void> => {
     dispatch({ type: 'SET_EDIT_MODE', payload: enabled });
