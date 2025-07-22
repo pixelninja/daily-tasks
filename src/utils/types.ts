@@ -4,6 +4,7 @@ export interface Task {
   completed: boolean;
   categoryId: string;
   order: number;
+  unitValue?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,6 +52,7 @@ export type AppAction =
 export interface TaskFormData {
   title: string;
   categoryId: string;
+  unitValue?: number;
 }
 
 export interface CategoryFormData {

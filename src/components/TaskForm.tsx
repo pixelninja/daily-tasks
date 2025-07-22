@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTaskContext } from '../contexts/TaskContext';
+import { useSettings } from '../contexts/SettingsContext';
 import type { TaskFormData } from '../utils/types';
+import { PlusIcon } from './icons';
 
 interface TaskFormProps {
   categoryId?: string;
@@ -11,9 +13,11 @@ interface TaskFormProps {
 
 export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onCancel, onTaskAdded }) => {
   const { state, actions } = useTaskContext();
+  const { state: settingsState } = useSettings();
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     categoryId: categoryId || state.categories[0]?.id || '',
+    unitValue: 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,11 +48,13 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onCancel, onTask
         categoryId: formData.categoryId,
         completed: false,
         order: state.tasks.filter(t => t.categoryId === formData.categoryId).length,
+        unitValue: formData.unitValue,
       });
       
       setFormData({
         title: '',
         categoryId: categoryId || formData.categoryId,
+        unitValue: 0,
       });
       
       // Re-focus input and scroll form into view after adding task
@@ -92,6 +98,31 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onCancel, onTask
         />
       </div>
 
+      {/* Unit Value Input - only show when unit tracker is enabled */}
+      {settingsState.unitTracker.enabled && (
+        <div className="form-control">
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="0"
+              className="input input-bordered input-primary w-20 text-base"
+              value={formData.unitValue || 0}
+              onChange={(e) => setFormData(prev => ({ ...prev, unitValue: parseFloat(e.target.value) || 0 }))}
+              disabled={isSubmitting}
+              step="any"
+            />
+            <div className="flex items-center text-sm text-base-content/60">
+              <span>
+                {settingsState.unitTracker.unit === 'custom' 
+                  ? settingsState.unitTracker.customUnit 
+                  : settingsState.unitTracker.unit
+                } (+/- when completed)
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!categoryId && (
         <div className="form-control">
           <select
@@ -123,9 +154,7 @@ export const TaskForm: React.FC<TaskFormProps> = ({ categoryId, onCancel, onTask
             </>
           ) : (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+              <PlusIcon className="h-4 w-4" />
               Add Task
             </>
           )}

@@ -6,6 +6,7 @@ import type { Task } from '../utils/types';
 import { useTaskContext } from '../contexts/TaskContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { triggerNyanCat, triggerRaptor, triggerEmojiParade, triggerUnicorn, triggerBalloons } from './celebrations';
+import { PencilIcon, DeleteIcon, DragIcon } from './icons';
 
 interface TaskItemProps {
   task: Task;
@@ -17,6 +18,32 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const checkboxRef = useRef<HTMLInputElement>(null);
+
+  // Helper function to format unit value display
+  const formatUnitValue = (value: number): React.ReactElement | null => {
+    if (value === 0 || !value) return null;
+    
+    // Get the short version of the unit
+    let unit: string;
+    if (settingsState.unitTracker.unit === 'custom') {
+      unit = settingsState.unitTracker.customUnit;
+    } else {
+      // Use short forms for predefined units
+      switch (settingsState.unitTracker.unit) {
+        case 'minutes': unit = 'min'; break;
+        case 'hours': unit = 'hrs'; break;
+        case 'dollars': unit = '$'; break;
+        default: unit = settingsState.unitTracker.unit;
+      }
+    }
+    
+    const sign = value > 0 ? '+' : '';
+    return (
+      <span className="text-xs text-base-content/60 ml-1">
+        ({sign}{value}{unit})
+      </span>
+    );
+  };
   
   const {
     attributes,
@@ -125,24 +152,24 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
               {...attributes}
               {...listeners}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-              </svg>
+              <DragIcon className="h-4 w-4" />
             </div>
           )}
 
-          {/* Checkbox */}
-          <div className="form-control">
-            <label className="label cursor-pointer p-0 block">
-              <input
-                ref={checkboxRef}
-                type="checkbox"
-                className="checkbox checkbox-primary"
-                checked={task.completed}
-                onChange={handleToggle}
-              />
-            </label>
-          </div>
+          {/* Checkbox - only show when not in edit mode */}
+          {!settingsState.editMode && (
+            <div className="form-control">
+              <label className="label cursor-pointer p-0 block">
+                <input
+                  ref={checkboxRef}
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  checked={task.completed}
+                  onChange={handleToggle}
+                />
+              </label>
+            </div>
+          )}
 
           {/* Task content */}
           <div className="flex-1">
@@ -166,10 +193,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                 onClick={settingsState.editMode ? handleEdit : undefined}
               >
                 {task.title}
+                {settingsState.unitTracker.enabled && task.unitValue !== undefined && task.unitValue !== 0 && formatUnitValue(task.unitValue)}
                 {settingsState.editMode && (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-base-content/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
+                  <PencilIcon className="h-3 w-3 text-base-content/50 shrink-0" />
                 )}
               </span>
             )}
@@ -184,9 +210,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                   onClick={handleDelete}
                   title="Delete task"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  <DeleteIcon className="h-4 w-4" />
                 </button>
               )}
             </div>

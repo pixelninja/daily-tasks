@@ -160,7 +160,7 @@ interface TaskProviderProps {
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
-  const { state: settingsState } = useSettings();
+  const { state: settingsState, actions: settingsActions } = useSettings();
 
   // Load data on mount
   useEffect(() => {
@@ -245,6 +245,27 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         };
         
         await taskStorage.updateTask(updatedTask);
+        
+        // Update unit tracker if enabled and task has a unit value
+        if (settingsState.unitTracker.enabled && task.unitValue) {
+          const currentValue = settingsState.unitTracker.currentValue;
+          let newValue = currentValue;
+          
+          if (updatedTask.completed) {
+            // Task was completed - add the unit value
+            newValue = currentValue + task.unitValue;
+          } else {
+            // Task was uncompleted - subtract the unit value
+            newValue = currentValue - task.unitValue;
+          }
+          
+          // Ensure the new value stays within min/max bounds
+          newValue = Math.max(settingsState.unitTracker.minValue, 
+                     Math.min(settingsState.unitTracker.maxValue, newValue));
+          
+          // Update the unit tracker value
+          settingsActions.setTrackerValue(newValue);
+        }
         
         // Update local state with the updated task
         dispatch({ type: 'UPDATE_TASK', payload: updatedTask });

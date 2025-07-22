@@ -6,6 +6,7 @@ import { CategoryForm } from './CategoryForm';
 import { BottomToolbar } from './BottomToolbar';
 import { UnitTracker } from './UnitTracker';
 import { Notes } from './Notes';
+import { PencilIcon, PlusIcon, SettingsIcon, ErrorIcon, FolderIcon } from './icons';
 
 // Available DaisyUI themes
 const AVAILABLE_THEMES = [
@@ -106,9 +107,7 @@ export const TaskList: React.FC = () => {
   if (state.error) {
     return (
       <div className="alert alert-error max-w-md mx-auto mt-8">
-        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <ErrorIcon className="stroke-current shrink-0 h-6 w-6" />
         <span>{state.error}</span>
       </div>
     );
@@ -139,18 +138,13 @@ export const TaskList: React.FC = () => {
             >
               {settingsState.appTitle}
               {settingsState.editMode && (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-base-content/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
+                <PencilIcon className="h-4 w-4 text-base-content/50" />
               )}
             </h1>
           )}
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" title="Settings">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
+              <SettingsIcon className="h-6 w-6" />
             </div>
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
               <li className="menu-title !p-2">Settings</li>
@@ -319,9 +313,7 @@ export const TaskList: React.FC = () => {
       {/* Categories */}
       {state.categories.length === 0 ? (
         <div className="text-center py-12">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto mb-4 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
+          <FolderIcon className="h-16 w-16 mx-auto mb-4 text-base-content/30" />
           <h2 className="text-xl font-semibold mb-2">No Categories Yet</h2>
           <p className="text-base-content/60 mb-4">
             Create your first category to start organising your daily tasks.
@@ -356,9 +348,7 @@ export const TaskList: React.FC = () => {
               <div className="card-body p-4 text-center">
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
+                    <PlusIcon className="h-4 w-4 text-primary" />
                   </div>
                   <div>
                     <h3 className="text-base font-semibold text-base-content mb-1">Add Category</h3>

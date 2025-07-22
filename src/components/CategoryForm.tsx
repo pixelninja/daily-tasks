@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTaskContext } from '../contexts/TaskContext';
 import type { CategoryFormData } from '../utils/types';
+import { PlusIcon } from './icons';
 
 interface CategoryFormProps {
   onSuccess?: () => void;
@@ -119,9 +120,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ onSuccess, onCancel 
                 </>
               ) : (
                 <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
+                  <PlusIcon className="h-4 w-4" />
                   Add Category
                 </>
               )}
