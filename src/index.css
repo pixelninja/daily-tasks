@@ -20,8 +20,47 @@
   themes: light --default, dark --prefersdark, cyberpunk, synthwave, retro, valentine, dracula, luxury, business, forest, aqua, lofi, pastel, fantasy, night, coffee, winter, sunset, nord;
 }
 
+/* Hide Scrollbars Cross-Browser */
+@layer base {
+  /* Hide scrollbars globally while maintaining scroll functionality */
+  html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  
+  body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
 /* PWA Safe Area Support */
 @layer utilities {
+  /* Utility class for hiding scrollbars on specific elements */
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  /* Touch-friendly hover states - only apply on devices that support true hover */
+  @media (hover: hover) {
+    .hover-touch-safe:hover {
+      background-color: rgb(var(--fallback-b2,oklch(var(--b2)/1)));
+    }
+  }
+
   .pb-safe {
     padding-bottom: clamp(16px, 4vh, 32px);
     padding-bottom: max(16px, env(safe-area-inset-bottom));

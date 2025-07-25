@@ -149,7 +149,7 @@ export const TaskList: React.FC = () => {
             <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
               <li className="menu-title !p-2">Settings</li>
               <li>
-                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
                   <span className="label-text">Edit Mode</span>
                   <input 
                     type="checkbox" 
@@ -160,7 +160,7 @@ export const TaskList: React.FC = () => {
                 </label>
               </li>
               <li>
-                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
                   <span className="label-text">Daily Reset</span>
                   <input 
                     type="checkbox" 
@@ -171,7 +171,7 @@ export const TaskList: React.FC = () => {
                 </label>
               </li>
               <li>
-                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
                   <span className="label-text">The Fun Zone</span>
                   <input 
                     type="checkbox" 
@@ -199,7 +199,7 @@ export const TaskList: React.FC = () => {
               </li>
               <li className="menu-title !p-2">Notes</li>
               <li>
-                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
                   <span className="label-text">Enable Notes</span>
                   <input 
                     type="checkbox" 
@@ -211,7 +211,7 @@ export const TaskList: React.FC = () => {
               </li>
               <li className="menu-title !p-2">Unit Tracker</li>
               <li>
-                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover:bg-base-200 rounded-lg">
+                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
                   <span className="label-text">Enable Tracker</span>
                   <input 
                     type="checkbox" 
@@ -228,6 +228,8 @@ export const TaskList: React.FC = () => {
                       <span className="label-text">Start Value</span>
                       <input 
                         type="number" 
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         className="input input-primary input-xs w-16 px-2" 
                         value={settingsState.unitTracker.startValue}
                         onChange={(e) => settingsActions.setTrackerConfig({ startValue: parseInt(e.target.value) || 0 })}
@@ -242,6 +244,8 @@ export const TaskList: React.FC = () => {
                       <div className="flex gap-1 items-center">
                         <input 
                           type="number" 
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                           className="input input-primary input-xs w-14 px-2" 
                           value={settingsState.unitTracker.minValue}
                           onChange={(e) => settingsActions.setTrackerConfig({ minValue: parseInt(e.target.value) || 0 })}
@@ -250,6 +254,8 @@ export const TaskList: React.FC = () => {
                         <span className="text-xs">-</span>
                         <input 
                           type="number" 
+                          inputMode="numeric"
+                          pattern="[0-9]*"
                           className="input input-primary input-xs w-14 px-2" 
                           value={settingsState.unitTracker.maxValue}
                           onChange={(e) => settingsActions.setTrackerConfig({ maxValue: parseInt(e.target.value) || 100 })}
@@ -263,6 +269,8 @@ export const TaskList: React.FC = () => {
                       <span className="label-text">Increment</span>
                       <input 
                         type="number" 
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         className="input input-primary input-xs w-16 px-2" 
                         value={settingsState.unitTracker.increment}
                         onChange={(e) => settingsActions.setTrackerConfig({ increment: parseInt(e.target.value) || 1 })}
