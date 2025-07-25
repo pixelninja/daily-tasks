@@ -15,6 +15,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@tailwindcss/vite": "^4.1.11",
     "@types/localforage": "^0.0.33",
+    "@vercel/analytics": "^1.5.0",
     "canvas-confetti": "^1.9.3",
     "daisyui": "^5.0.46",
     "date-fns": "^4.1.0",

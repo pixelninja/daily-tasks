@@ -1,6 +1,7 @@
 import { TaskProvider } from './contexts/TaskContext';
 import { SettingsProvider, useSettings } from './contexts/SettingsContext';
 import { TaskList } from './components/TaskList';
+import { Analytics } from '@vercel/analytics/react';
 
 const AppContent = () => {
   const { state: settingsState } = useSettings();
@@ -20,6 +21,7 @@ function App() {
   return (
     <SettingsProvider>
       <AppContent />
+      <Analytics />
     </SettingsProvider>
   );
 }
