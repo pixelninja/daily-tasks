@@ -68,15 +68,7 @@ export const UnitTracker: React.FC = () => {
     return null;
   }
 
-  // Calculate progress percentage for visual indicator
-  const progressPercentage = ((unitTracker.currentValue - unitTracker.minValue) / (unitTracker.maxValue - unitTracker.minValue)) * 100;
 
-  // Determine color based on progress (can be customized)
-  const getProgressColor = () => {
-    if (progressPercentage <= 50) return 'text-success';
-    if (progressPercentage <= 75) return 'text-warning';
-    return 'text-error';
-  };
 
   return (
     <div className="card bg-base-100 shadow-sm border border-base-300">
@@ -106,7 +98,7 @@ export const UnitTracker: React.FC = () => {
               )}
             </h3>
           )}
-          <div className={`text-xl font-bold ${getProgressColor()}`}>
+          <div className="text-xl font-bold text-base-content">
             {formatValue(unitTracker.currentValue)}
           </div>
         </div>

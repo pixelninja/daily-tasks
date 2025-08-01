@@ -9,3 +9,6 @@ export { FolderIcon } from './FolderIcon';
 export { ClipboardIcon } from './ClipboardIcon';
 export { CheckCircleIcon } from './CheckCircleIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
+export { ShareIcon } from './ShareIcon';
+export { DownloadIcon } from './DownloadIcon';
+export { XIcon } from './XIcon';
