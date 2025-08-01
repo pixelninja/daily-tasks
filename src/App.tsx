@@ -9,7 +9,7 @@ const AppContent = () => {
   return (
     <TaskProvider>
       <div className="min-h-screen bg-base-200" data-theme={settingsState.selectedTheme}>
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="container mx-auto px-4 pt-0 pb-8 max-w-4xl">
           <TaskList />
         </div>
       </div>

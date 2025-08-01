@@ -116,9 +116,9 @@ export const TaskList: React.FC = () => {
   return (
     <div className="space-y-6 pb-32">
 
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-base-100 border-b border-base-300 -mx-4 px-4 py-4 mb-6 backdrop-blur-sm">
+        <div className="flex justify-between items-center gap-4">
           {isEditingTitle && settingsState.editMode ? (
             <input
               ref={titleInputRef}
@@ -127,12 +127,12 @@ export const TaskList: React.FC = () => {
               onChange={(e) => setEditTitle(e.target.value)}
               onKeyDown={handleTitleKeyPress}
               onBlur={handleTitleBlur}
-              className="text-2xl font-bold text-base-content bg-transparent border-2 border-primary rounded px-2 py-1 focus:outline-none focus:border-primary-focus"
+              className="text-2xl font-bold text-base-content bg-transparent border-2 border-primary rounded px-2 py-1 focus:outline-none focus:border-primary-focus flex-1"
               maxLength={50}
             />
           ) : (
             <h1 
-              className={`text-2xl font-bold text-base-content ${settingsState.editMode ? 'cursor-pointer hover:text-primary' : ''} transition-colors duration-200 flex items-center gap-2`}
+              className={`text-2xl font-bold text-base-content ${settingsState.editMode ? 'cursor-pointer hover:text-primary' : ''} transition-colors duration-200 flex items-center gap-2 flex-1`}
               onClick={settingsState.editMode ? handleTitleClick : undefined}
               title={settingsState.editMode ? "Click to edit title" : undefined}
             >
@@ -142,23 +142,26 @@ export const TaskList: React.FC = () => {
               )}
             </h1>
           )}
+          
+          {/* Edit Toggle */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-base-content/70">Edit</span>
+            <input 
+              type="checkbox" 
+              className="toggle toggle-primary toggle-sm" 
+              checked={settingsState.editMode}
+              onChange={(e) => settingsActions.setEditMode(e.target.checked)}
+              title="Toggle edit mode"
+            />
+          </div>
+          
+          {/* Settings Dropdown */}
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle" title="Settings">
               <SettingsIcon className="h-6 w-6" />
             </div>
-            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
+            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-50 w-64 p-2 shadow">
               <li className="menu-title !p-2">Settings</li>
-              <li>
-                <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
-                  <span className="label-text">Edit Mode</span>
-                  <input 
-                    type="checkbox" 
-                    className="toggle toggle-primary" 
-                    checked={settingsState.editMode}
-                    onChange={(e) => settingsActions.setEditMode(e.target.checked)}
-                  />
-                </label>
-              </li>
               <li>
                 <label className="flex justify-between items-center w-full p-2 cursor-pointer hover-touch-safe rounded-lg">
                   <span className="label-text">Daily Reset</span>
