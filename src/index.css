@@ -67,6 +67,9 @@
   }
   
   .pt-safe {
+    /* Fallback for browsers that don't support env() */
+    padding-top: 16px;
+    /* Safe area support for modern browsers */
     padding-top: max(16px, env(safe-area-inset-top));
   }
   
@@ -89,6 +92,8 @@
     }
     
     .pt-safe {
+      /* Enhanced padding for PWA mode */
+      padding-top: 20px;
       padding-top: max(20px, env(safe-area-inset-top));
     }
   }
@@ -97,6 +102,12 @@
   @supports (-webkit-touch-callout: none) {
     .pwa-bottom-bar {
       padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+    
+    .pt-safe {
+      /* iOS-specific safe area handling */
+      padding-top: 20px;
+      padding-top: max(20px, env(safe-area-inset-top));
     }
   }
 }
