@@ -117,7 +117,7 @@ export const TaskList: React.FC = () => {
     <div className="space-y-6 pb-32">
 
       {/* Sticky Header */}
-      <div className="sticky top-0 z-40 bg-base-100 border-b border-base-300 -mx-4 px-4 py-4 mb-6 backdrop-blur-sm">
+      <div className="sticky top-0 z-40 bg-base-100 border-b border-base-300 -mx-4 px-4 pt-safe py-4 mb-6 backdrop-blur-sm">
         <div className="flex justify-between items-center gap-4">
           {isEditingTitle && settingsState.editMode ? (
             <input
