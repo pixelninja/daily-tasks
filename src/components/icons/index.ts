@@ -11,4 +11,5 @@ export { CheckCircleIcon } from './CheckCircleIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
 export { ShareIcon } from './ShareIcon';
 export { DownloadIcon } from './DownloadIcon';
+export { UploadIcon } from './UploadIcon';
 export { XIcon } from './XIcon';

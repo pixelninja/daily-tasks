@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { AppState, AppAction, Task, Category } from '../utils/types';
 import { taskStorage, categoryStorage, appStorage, migrateData } from '../utils/storage';
 import { isNewDay, getMidnightTimestamp } from '../utils/dateUtils';
+import { exportData, importData as importDataUtil, type ImportResult } from '../utils/dataExport';
 import { useSettings } from './SettingsContext';
 
 // Initial state
@@ -148,6 +149,8 @@ interface TaskContextType {
     reorderCategories: (categories: Category[]) => Promise<void>;
     checkDailyReset: () => Promise<void>;
     resetDailyTasks: () => Promise<void>;
+    exportData: () => Promise<any>;
+    importData: (data: any, replaceExisting?: boolean) => Promise<{ success: boolean; error?: string; message?: string }>;
   };
 }
 
@@ -399,6 +402,37 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     }
   };
 
+  const exportAppData = async (): Promise<any> => {
+    try {
+      return await exportData(settingsState);
+    } catch (error) {
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to export data' });
+      console.error('Error exporting data:', error);
+      throw error;
+    }
+  };
+
+  const importAppData = async (data: any, replaceExisting: boolean = true): Promise<ImportResult> => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      const result = await importDataUtil(data, settingsActions, { loadData }, replaceExisting);
+      
+      if (result.success) {
+        // Reload data after successful import
+        await loadData();
+      } else {
+        dispatch({ type: 'SET_ERROR', payload: result.error || 'Import failed' });
+      }
+      
+      return result;
+    } catch (error) {
+      const errorMessage = 'Failed to import data';
+      dispatch({ type: 'SET_ERROR', payload: errorMessage });
+      console.error('Error importing data:', error);
+      return { success: false, error: errorMessage };
+    }
+  };
+
   const contextValue: TaskContextType = {
     state,
     dispatch,
@@ -415,6 +449,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       reorderCategories,
       checkDailyReset,
       resetDailyTasks,
+      exportData: exportAppData,
+      importData: importAppData,
     },
   };
 

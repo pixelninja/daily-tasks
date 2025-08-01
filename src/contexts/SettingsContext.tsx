@@ -169,6 +169,7 @@ interface SettingsContextType {
     setNotesEnabled: (enabled: boolean) => Promise<void>;
     setNotesTitle: (title: string) => Promise<void>;
     setNotesContent: (content: string) => Promise<void>;
+    loadSettings: (settings: Partial<SettingsState>) => Promise<void>;
   };
 }
 
@@ -305,6 +306,17 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     dispatch({ type: 'SET_NOTES_CONTENT', payload: content });
   };
 
+  const loadSettings = async (settings: Partial<SettingsState>): Promise<void> => {
+    dispatch({ 
+      type: 'LOAD_SETTINGS', 
+      payload: {
+        ...state,
+        ...settings,
+        isLoading: false,
+      }
+    });
+  };
+
   const actions = {
     setEditMode,
     setDailyResetEnabled,
@@ -318,6 +330,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     setNotesEnabled,
     setNotesTitle,
     setNotesContent,
+    loadSettings,
   };
 
   return (
