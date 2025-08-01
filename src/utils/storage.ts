@@ -121,7 +121,17 @@ export const categoryStorage = {
   async getCategories(): Promise<Category[]> {
     try {
       const categories = await localforage.getItem<Category[]>(CATEGORIES_KEY);
-      if (!categories) return this.getDefaultCategories();
+      if (!categories || categories.length === 0) {
+        // Load default categories and tasks for new users
+        const defaultCategories = this.getDefaultCategories();
+        const defaultTasks = this.getDefaultTasks();
+        
+        // Save default categories and tasks
+        await this.saveCategories(defaultCategories);
+        await taskStorage.saveTasks(defaultTasks);
+        
+        return defaultCategories;
+      }
       
       // Ensure dates are Date objects (in case they were stored as strings)
       return categories.map(category => ({
@@ -174,26 +184,115 @@ export const categoryStorage = {
   getDefaultCategories(): Category[] {
     return [
       {
-        id: 'default-personal',
-        name: 'Personal',
+        id: 'default-todo',
+        name: 'To Do',
         color: '#ff6b6b',
         order: 0,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        id: 'default-work',
-        name: 'Work',
+        id: 'default-chores',
+        name: 'Chores',
         color: '#4ecdc4',
+        order: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+  },
+
+  getDefaultTasks(): Task[] {
+    return [
+      // To Do tasks (funny daily tasks)
+      {
+        id: 'default-task-1',
+        title: 'Convince the cat that I am the real owner of this house',
+        completed: false,
+        categoryId: 'default-todo',
+        order: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-2',
+        title: 'Practice my award acceptance speech in the mirror',
+        completed: false,
+        categoryId: 'default-todo',
         order: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        id: 'default-health',
-        name: 'Health',
-        color: '#45b7d1',
+        id: 'default-task-3',
+        title: 'Resist the urge to buy things I don\'t need online',
+        completed: false,
+        categoryId: 'default-todo',
         order: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-4',
+        title: 'Pretend to understand what adults are talking about',
+        completed: false,
+        categoryId: 'default-todo',
+        order: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-5',
+        title: 'Count how many times I check my phone (spoiler: it\'s too many)',
+        completed: false,
+        categoryId: 'default-todo',
+        order: 4,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      // Chores tasks (things a child might do)
+      {
+        id: 'default-task-6',
+        title: 'Make my bed without it looking like a tornado hit it',
+        completed: false,
+        categoryId: 'default-chores',
+        order: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-7',
+        title: 'Feed the dog (and remember that I already fed them)',
+        completed: false,
+        categoryId: 'default-chores',
+        order: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-8',
+        title: 'Take out the trash before it becomes sentient',
+        completed: false,
+        categoryId: 'default-chores',
+        order: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-9',
+        title: 'Clean my room (find the floor under all those clothes)',
+        completed: false,
+        categoryId: 'default-chores',
+        order: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'default-task-10',
+        title: 'Help with dishes without breaking anything important',
+        completed: false,
+        categoryId: 'default-chores',
+        order: 4,
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -203,7 +302,17 @@ export const categoryStorage = {
   getCategoriesFromLocalStorage(): Category[] {
     try {
       const categories = localStorage.getItem(CATEGORIES_KEY);
-      if (!categories) return this.getDefaultCategories();
+      if (!categories) {
+        // Load default categories and tasks for new users
+        const defaultCategories = this.getDefaultCategories();
+        const defaultTasks = this.getDefaultTasks();
+        
+        // Save default categories and tasks to localStorage
+        this.saveCategoriesToLocalStorage(defaultCategories);
+        taskStorage.saveTasksToLocalStorage(defaultTasks);
+        
+        return defaultCategories;
+      }
       
       const parsedCategories = JSON.parse(categories);
       // Convert date strings back to Date objects
