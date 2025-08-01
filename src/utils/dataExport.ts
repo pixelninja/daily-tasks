@@ -25,7 +25,7 @@ export interface ImportResult {
 const EXPORT_VERSION = '1.0';
 
 /**
- * Export all application data to a JSON object
+ * Export all application data to a JSON object (async version)
  */
 export const exportData = async (settingsState: SettingsState): Promise<ExportData> => {
   try {
@@ -65,6 +65,39 @@ export const exportData = async (settingsState: SettingsState): Promise<ExportDa
     console.error('Error exporting data:', error);
     throw new Error('Failed to export data');
   }
+};
+
+/**
+ * Export data synchronously from current state (for clipboard)
+ */
+export const exportDataSync = (
+  tasks: Task[], 
+  categories: Category[], 
+  settingsState: SettingsState, 
+  lastResetDate: string | null
+): ExportData => {
+  return {
+    version: EXPORT_VERSION,
+    exportDate: new Date().toISOString(),
+    data: {
+      tasks,
+      categories,
+      settings: {
+        editMode: settingsState.editMode,
+        dailyResetEnabled: settingsState.dailyResetEnabled,
+        animationsEnabled: settingsState.animationsEnabled,
+        selectedTheme: settingsState.selectedTheme,
+        appTitle: settingsState.appTitle,
+        unitTracker: settingsState.unitTracker,
+        notesEnabled: settingsState.notesEnabled,
+        notesTitle: settingsState.notesTitle,
+        notesContent: settingsState.notesContent,
+      },
+      appState: {
+        lastResetDate,
+      },
+    },
+  };
 };
 
 /**
@@ -222,15 +255,83 @@ export const downloadDataAsFile = (data: ExportData): void => {
 };
 
 /**
- * Copy data to clipboard
+ * Detect if running on iOS
+ */
+export const isIOS = (): boolean => {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+};
+
+/**
+ * Copy data to clipboard with iOS-specific handling
  */
 export const copyDataToClipboard = async (data: ExportData): Promise<void> => {
   try {
     const jsonString = JSON.stringify(data, null, 2);
-    await navigator.clipboard.writeText(jsonString);
+    
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(jsonString);
+      return;
+    }
+    
+    // Fallback for older browsers or when clipboard API fails
+    const textArea = document.createElement('textarea');
+    textArea.value = jsonString;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    const successful = document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    if (!successful) {
+      throw new Error('Copy command was unsuccessful');
+    }
   } catch (error) {
     console.error('Error copying to clipboard:', error);
-    throw new Error('Failed to copy to clipboard');
+    
+    // Provide iOS-specific error message
+    if (isIOS()) {
+      throw new Error('Clipboard access restricted on iOS. Please use manual copy.');
+    } else {
+      throw new Error('Failed to copy to clipboard');
+    }
+  }
+};
+
+/**
+ * Copy text to clipboard synchronously (for iOS user gesture)
+ */
+export const copyTextToClipboardSync = async (text: string): Promise<void> => {
+  try {
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+    
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    const successful = document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    if (!successful) {
+      throw new Error('Copy command was unsuccessful');
+    }
+  } catch (error) {
+    console.error('Error copying to clipboard:', error);
+    throw error;
   }
 };
 

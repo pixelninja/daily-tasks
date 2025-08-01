@@ -3,7 +3,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useTaskContext } from '../contexts/TaskContext';
 import { AVAILABLE_THEMES } from '../constants/themes';
 import { XIcon, DownloadIcon, UploadIcon, ClipboardIcon } from './icons';
-import { downloadDataAsFile, copyDataToClipboard, parseImportData, readFileAsText } from '../utils/dataExport';
+import { downloadDataAsFile, parseImportData, readFileAsText, exportDataSync, copyTextToClipboardSync, isIOS } from '../utils/dataExport';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -12,13 +12,15 @@ interface SettingsModalProps {
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const { state: settingsState, actions: settingsActions } = useSettings();
-  const { actions: taskActions } = useTaskContext();
+  const { state: taskState, actions: taskActions } = useTaskContext();
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   
   // Data management state
   const [importText, setImportText] = useState('');
   const [showImportArea, setShowImportArea] = useState(false);
+  const [exportText, setExportText] = useState('');
+  const [showExportArea, setShowExportArea] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -73,12 +75,40 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   const handleExportToClipboard = async () => {
     try {
       setIsProcessing(true);
-      const data = await taskActions.exportData();
-      await copyDataToClipboard(data);
+      
+      // Create export data synchronously from current state
+      const exportData = exportDataSync(
+        taskState.tasks,
+        taskState.categories,
+        settingsState,
+        taskState.lastResetDate
+      );
+      
+      const jsonString = JSON.stringify(exportData, null, 2);
+      
+      // Try to copy immediately while in user gesture
+      await copyTextToClipboardSync(jsonString);
+      
       setFeedbackMessage({ type: 'success', message: 'Data copied to clipboard!' });
     } catch (error) {
-      setFeedbackMessage({ type: 'error', message: 'Failed to copy data to clipboard' });
       console.error('Export to clipboard error:', error);
+      
+      // Fallback: show data for manual copy
+      const exportData = exportDataSync(
+        taskState.tasks,
+        taskState.categories,
+        settingsState,
+        taskState.lastResetDate
+      );
+      const jsonString = JSON.stringify(exportData, null, 2);
+      setExportText(jsonString);
+      setShowExportArea(true);
+      
+      const errorMessage = isIOS() 
+        ? 'Clipboard restricted on iOS. Please copy manually below.' 
+        : 'Clipboard failed. Please copy manually below.';
+        
+      setFeedbackMessage({ type: 'error', message: errorMessage });
     } finally {
       setIsProcessing(false);
     }
@@ -434,6 +464,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       className="btn btn-ghost btn-sm flex-1"
                     >
                       Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Manual export text area */}
+              {showExportArea && (
+                <div className="space-y-2 p-3 bg-base-200 rounded-lg">
+                  <div className="text-xs text-base-content/70 mb-2">
+                    {isIOS() ? 'Tap and hold the text below, then select "Copy":' : 'Select all text below and copy:'}
+                  </div>
+                  <textarea
+                    value={exportText}
+                    readOnly
+                    className="textarea textarea-bordered textarea-sm w-full h-32 text-xs"
+                    onClick={(e) => e.currentTarget.select()}
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setShowExportArea(false);
+                        setExportText('');
+                      }}
+                      className="btn btn-ghost btn-sm flex-1"
+                    >
+                      Close
                     </button>
                   </div>
                 </div>
