@@ -255,52 +255,20 @@ export const downloadDataAsFile = (data: ExportData): void => {
 };
 
 /**
- * Detect if running on iOS
+ * Cached iOS detection result
  */
-export const isIOS = (): boolean => {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent);
-};
+let cachedIOSResult: boolean | null = null;
 
 /**
- * Copy data to clipboard with iOS-specific handling
+ * Detect if running on iOS (cached for performance)
  */
-export const copyDataToClipboard = async (data: ExportData): Promise<void> => {
-  try {
-    const jsonString = JSON.stringify(data, null, 2);
-    
-    // Try modern clipboard API first
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(jsonString);
-      return;
-    }
-    
-    // Fallback for older browsers or when clipboard API fails
-    const textArea = document.createElement('textarea');
-    textArea.value = jsonString;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    const successful = document.execCommand('copy');
-    document.body.removeChild(textArea);
-    
-    if (!successful) {
-      throw new Error('Copy command was unsuccessful');
-    }
-  } catch (error) {
-    console.error('Error copying to clipboard:', error);
-    
-    // Provide iOS-specific error message
-    if (isIOS()) {
-      throw new Error('Clipboard access restricted on iOS. Please use manual copy.');
-    } else {
-      throw new Error('Failed to copy to clipboard');
-    }
+export const isIOS = (): boolean => {
+  if (cachedIOSResult === null) {
+    cachedIOSResult = /iPad|iPhone|iPod/.test(navigator.userAgent);
   }
+  return cachedIOSResult;
 };
+
 
 /**
  * Copy text to clipboard synchronously (for iOS user gesture)

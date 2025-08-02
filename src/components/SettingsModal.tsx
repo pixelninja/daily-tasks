@@ -73,34 +73,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
   // Data management handlers
   const handleExportToClipboard = async () => {
+    setIsProcessing(true);
+    
+    // Create export data synchronously from current state (only once)
+    const exportData = exportDataSync(
+      taskState.tasks,
+      taskState.categories,
+      settingsState,
+      taskState.lastResetDate
+    );
+    const jsonString = JSON.stringify(exportData, null, 2);
+    
     try {
-      setIsProcessing(true);
-      
-      // Create export data synchronously from current state
-      const exportData = exportDataSync(
-        taskState.tasks,
-        taskState.categories,
-        settingsState,
-        taskState.lastResetDate
-      );
-      
-      const jsonString = JSON.stringify(exportData, null, 2);
-      
       // Try to copy immediately while in user gesture
       await copyTextToClipboardSync(jsonString);
-      
       setFeedbackMessage({ type: 'success', message: 'Data copied to clipboard!' });
     } catch (error) {
       console.error('Export to clipboard error:', error);
       
-      // Fallback: show data for manual copy
-      const exportData = exportDataSync(
-        taskState.tasks,
-        taskState.categories,
-        settingsState,
-        taskState.lastResetDate
-      );
-      const jsonString = JSON.stringify(exportData, null, 2);
+      // Fallback: show data for manual copy (reuse already created data)
       setExportText(jsonString);
       setShowExportArea(true);
       
